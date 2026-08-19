@@ -16,15 +16,25 @@ public class Gnaix {
         System.out.println("Hello! I'm Gnaix");
         System.out.println("What can I do for you?");
 
+        String[] tasks = new String[100];
+        int taskCounter = 0;
+
         while (true) {
             System.out.println(separator);
             String cmd = scanner.nextLine();
 
             if (cmd.equals("bye")) {
                 break;
+            } else if (cmd.equals("list")) {
+                for (int i = 0; i < taskCounter; i++) {
+                    System.out.println((i + 1) + ". " + tasks[i]);
+                }
             } else {
-                System.out.println(cmd);
+                tasks[taskCounter] = cmd;
+                taskCounter++;
+                System.out.println("added: " + cmd);
             }
+
         }
 
         System.out.println(separator);
