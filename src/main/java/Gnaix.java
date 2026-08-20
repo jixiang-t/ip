@@ -35,6 +35,45 @@ public class Gnaix {
                 String[] taskData = cmd.split(" ");
                 int taskNumber = Integer.parseInt(taskData[1]);
                 uncompleteTask(tasks,  taskNumber);
+            } else if (cmd.startsWith("todo ")) {
+                String description = cmd.substring(5);
+                tasks[taskCounter] = new Task(description);
+                taskCounter++;
+
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + tasks[taskCounter - 1]);
+                System.out.println("Now you have " + taskCounter + " tasks in the list.");
+
+            } else if (cmd.startsWith("deadline ")) {
+                String input = cmd.substring(9);
+                String[] parts = input.split(" /by ", 2);
+
+                String description = parts[0];
+                String by = parts[1];
+
+                tasks[taskCounter] = new Task(description, "D", by, null);
+                taskCounter++;
+
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + tasks[taskCounter - 1]);
+                System.out.println("Now you have " + taskCounter + " tasks in the list.");
+
+            } else if (cmd.startsWith("event ")) {
+                String input = cmd.substring(6);
+
+                String[] parts = input.split(" /from ", 2);
+                String description = parts[0];
+
+                String[] times = parts[1].split(" /to ", 2);
+                String from = times[0];
+                String to = times[1];
+
+                tasks[taskCounter] = new Task(description, "E", from, to);
+                taskCounter++;
+
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + tasks[taskCounter - 1]);
+                System.out.println("Now you have " + taskCounter + " tasks in the list.");
             } else {
                 tasks[taskCounter] = new Task(cmd);
                 taskCounter++;
