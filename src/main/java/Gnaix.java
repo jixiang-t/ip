@@ -18,8 +18,9 @@ public class Gnaix {
         System.out.println("What can I do for you?");
 
         ArrayList<Task> tasks = new ArrayList<>();
+        boolean isRunning = true;
 
-        while (true) {
+        while (isRunning) {
             System.out.println(separator);
             String cmd = scanner.nextLine().trim();
 
@@ -29,63 +30,73 @@ public class Gnaix {
             }
 
             String[] commandParts = cmd.split("\\s+", 2);
-            String command = commandParts[0].toLowerCase();
+            Command command = Command.fromString(commandParts[0]);
             String arguments = commandParts.length > 1 ? commandParts[1] : "";
 
-            if (command.equals("bye")) {
-                break;
-            } else if (command.equals("list")) {
-                listTasks(tasks);
+            switch (command) {
+                case BYE:
+                    isRunning = false;
+                    break;
 
-            } else if (command.equals("mark")) {
-                try {
-                    int taskNumber = Integer.parseInt(arguments);
-                    if (taskNumber < 1 || taskNumber > tasks.size()) {
-                        System.out.println("That task number does not exist! :(");
-                    } else {
-                        completeTask(tasks, taskNumber);
+                case LIST:
+                    listTasks(tasks);
+                    break;
+
+                case MARK:
+                    try {
+                        int taskNumber = Integer.parseInt(arguments);
+                        if (taskNumber < 1 || taskNumber > tasks.size()) {
+                            System.out.println("That task number does not exist! :(");
+                        } else {
+                            completeTask(tasks, taskNumber);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("That task number is not a number! :(");
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("That task number is not a number! :(");
-                }
+                    break;
 
-            } else if (command.equals("unmark")) {
-                try {
-                    int taskNumber = Integer.parseInt(arguments);
-                    if (taskNumber < 1 || taskNumber > tasks.size()) {
-                        System.out.println("That task number does not exist! :(");
-                    } else {
-                        uncompleteTask(tasks, taskNumber);
+                case UNMARK:
+                    try {
+                        int taskNumber = Integer.parseInt(arguments);
+                        if (taskNumber < 1 || taskNumber > tasks.size()) {
+                            System.out.println("That task number does not exist! :(");
+                        } else {
+                            uncompleteTask(tasks, taskNumber);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("That task number is not a number! :(");
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("That task number is not a number! :(");
-                }
+                    break;
 
-            } else if (command.equals("delete")) {
-                try {
-                    int taskNumber = Integer.parseInt(arguments);
+                case DELETE:
+                    try {
+                        int taskNumber = Integer.parseInt(arguments);
 
-                    if (taskNumber < 1 || taskNumber > tasks.size()) {
-                        System.out.println("That task number does not exist! :(");
-                    } else {
-                        deleteTask(tasks, taskNumber);
+                        if (taskNumber < 1 || taskNumber > tasks.size()) {
+                            System.out.println("That task number does not exist! :(");
+                        } else {
+                            deleteTask(tasks, taskNumber);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("That task number is not a number! :(");
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("That task number is not a number! :(");
-                }
+                    break;
 
-            } else if (command.equals("todo")) {
-                addToDo(tasks, arguments);
+                case TODO:
+                    addToDo(tasks, arguments);
+                    break;
 
-            } else if (command.equals("deadline")) {
-                addDeadline(tasks, arguments);
+                case DEADLINE:
+                    addDeadline(tasks, arguments);
+                    break;
 
-            } else if (command.equals("event")) {
-                addEvent(tasks, arguments);
+                case EVENT:
+                    addEvent(tasks, arguments);
+                    break;
 
-            } else {
-                System.out.println("That's not a valid command! :(");
-
+                case UNKNOWN:
+                    System.out.println("That's not a valid command! :(");
+                    break;
             }
 
         }
