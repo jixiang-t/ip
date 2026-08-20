@@ -23,34 +23,35 @@ public class Gnaix {
             System.out.println(separator);
             String cmd = scanner.nextLine();
 
-            if (cmd.equals("bye")) {
+            String[] commandParts = cmd.trim().split("\\s+", 2);
+            String command = commandParts[0];
+            String arguments = commandParts.length > 1 ? commandParts[1].trim() : "";
+
+            if (command.equals("bye")) {
                 break;
-            } else if (cmd.equals("list")) {
+            } else if (command.equals("list")) {
                 listTasks(tasks, taskCounter);
-            } else if (cmd.startsWith("mark ")) {
-                String[] taskData = cmd.split(" ");
-                int taskNumber = Integer.parseInt(taskData[1]);
+            } else if (command.equals("mark")) {
+                int taskNumber = Integer.parseInt(arguments);
                 completeTask(tasks,  taskNumber);
-            } else if (cmd.startsWith("unmark ")) {
-                String[] taskData = cmd.split(" ");
-                int taskNumber = Integer.parseInt(taskData[1]);
+            } else if (command.equals("unmark")) {
+                int taskNumber = Integer.parseInt(arguments);
                 uncompleteTask(tasks,  taskNumber);
-            } else if (cmd.startsWith("todo ")) {
-                String input = cmd.substring(5);
-                addToDo(tasks, taskCounter, input);
+            } else if (command.equals("todo")) {
+                if (arguments.isEmpty()) {
+                    System.out.println("NO DESCRIPTION GIVEN! :(");
+                } else {
+                    addToDo(tasks, taskCounter, arguments);
+                    taskCounter++;
+                }
+            } else if (command.equals("deadline")) {
+                addDeadline(tasks, taskCounter, arguments);
                 taskCounter++;
-            } else if (cmd.startsWith("deadline ")) {
-                String input = cmd.substring(9);
-                addDeadline(tasks, taskCounter, input);
-                taskCounter++;
-            } else if (cmd.startsWith("event ")) {
-                String input = cmd.substring(6);
-                addEvent(tasks, taskCounter, input);
+            } else if (command.equals("event")) {
+                addEvent(tasks, taskCounter, arguments);
                 taskCounter++;
             } else {
-                tasks[taskCounter] = new Task(cmd);
-                taskCounter++;
-                System.out.println("added: " + cmd);
+                System.out.println("That's not a valid command! :(");
             }
 
         }
