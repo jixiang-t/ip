@@ -31,12 +31,31 @@ public class Gnaix {
                 break;
             } else if (command.equals("list")) {
                 listTasks(tasks, taskCounter);
+
             } else if (command.equals("mark")) {
-                int taskNumber = Integer.parseInt(arguments);
-                completeTask(tasks,  taskNumber);
+                try {
+                    int taskNumber = Integer.parseInt(arguments);
+                    if (taskNumber < 1 || taskNumber > taskCounter) {
+                        System.out.println("That task number does not exist! :(");
+                    } else {
+                        completeTask(tasks, taskNumber);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("That task number is not a number! :(");
+                }
+
             } else if (command.equals("unmark")) {
-                int taskNumber = Integer.parseInt(arguments);
-                uncompleteTask(tasks,  taskNumber);
+                try {
+                    int taskNumber = Integer.parseInt(arguments);
+                    if (taskNumber < 1 || taskNumber > taskCounter) {
+                        System.out.println("That task number does not exist! :(");
+                    } else {
+                        uncompleteTask(tasks, taskNumber);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("That task number is not a number! :(");
+                }
+
             } else if (command.equals("todo")) {
                 if (arguments.isEmpty()) {
                     System.out.println("NO DESCRIPTION GIVEN! :(");
@@ -44,14 +63,18 @@ public class Gnaix {
                     addToDo(tasks, taskCounter, arguments);
                     taskCounter++;
                 }
+
             } else if (command.equals("deadline")) {
                 addDeadline(tasks, taskCounter, arguments);
                 taskCounter++;
+
             } else if (command.equals("event")) {
                 addEvent(tasks, taskCounter, arguments);
                 taskCounter++;
+
             } else {
                 System.out.println("That's not a valid command! :(");
+
             }
 
         }
