@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Gnaix {
@@ -16,8 +17,7 @@ public class Gnaix {
         System.out.println("Hello! I'm Gnaix");
         System.out.println("What can I do for you?");
 
-        Task[] tasks = new Task[100];
-        int taskCounter = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         while (true) {
             System.out.println(separator);
@@ -29,18 +29,18 @@ public class Gnaix {
             }
 
             String[] commandParts = cmd.split("\\s+", 2);
-            String command = commandParts[0];
+            String command = commandParts[0].toLowerCase();
             String arguments = commandParts.length > 1 ? commandParts[1] : "";
 
             if (command.equals("bye")) {
                 break;
             } else if (command.equals("list")) {
-                listTasks(tasks, taskCounter);
+                listTasks(tasks);
 
             } else if (command.equals("mark")) {
                 try {
                     int taskNumber = Integer.parseInt(arguments);
-                    if (taskNumber < 1 || taskNumber > taskCounter) {
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
                         System.out.println("That task number does not exist! :(");
                     } else {
                         completeTask(tasks, taskNumber);
@@ -52,7 +52,7 @@ public class Gnaix {
             } else if (command.equals("unmark")) {
                 try {
                     int taskNumber = Integer.parseInt(arguments);
-                    if (taskNumber < 1 || taskNumber > taskCounter) {
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
                         System.out.println("That task number does not exist! :(");
                     } else {
                         uncompleteTask(tasks, taskNumber);
@@ -65,29 +65,23 @@ public class Gnaix {
                 try {
                     int taskNumber = Integer.parseInt(arguments);
 
-                    if (taskNumber < 1 || taskNumber > taskCounter) {
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
                         System.out.println("That task number does not exist! :(");
                     } else {
-                        deleteTask(tasks, taskCounter, taskNumber);
-                        taskCounter--;
+                        deleteTask(tasks, taskNumber);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("That task number is not a number! :(");
                 }
+
             } else if (command.equals("todo")) {
-                if (addToDo(tasks, taskCounter, arguments)) {
-                    taskCounter++;
-                }
+                addToDo(tasks, arguments);
 
             } else if (command.equals("deadline")) {
-                if (addDeadline(tasks, taskCounter, arguments)) {
-                    taskCounter++;
-                }
+                addDeadline(tasks, arguments);
 
             } else if (command.equals("event")) {
-                if (addEvent(tasks, taskCounter, arguments)) {
-                    taskCounter++;
-                }
+                addEvent(tasks, arguments);
 
             } else {
                 System.out.println("That's not a valid command! :(");
@@ -101,26 +95,25 @@ public class Gnaix {
         System.out.println(separator);
     }
 
-    private static boolean addToDo(Task[] tasks, int taskNumber, String description) {
+    private static void addToDo(ArrayList<Task> tasks, String description) {
         description = description.trim();
         if (description.isEmpty()) {
             System.out.println("NO DESCRIPTION GIVEN! :(");
-            return false;
+            return;
         }
 
-        tasks[taskNumber] = new Todo(description);
+        tasks.add(new Todo(description));
         System.out.println("Got it. I've added this task:");
-        System.out.println("  " + tasks[taskNumber]);
-        System.out.println("Now you have " + (taskNumber + 1) + " tasks in the list.");
-        return true;
+        System.out.println("  " + tasks.getLast());
+        System.out.println("Now you have " + (tasks.size()) + " tasks in the list.");
     }
 
-    private static boolean addDeadline(Task[] tasks, int taskNumber, String description) {
+    private static void addDeadline(ArrayList<Task> tasks, String description) {
         String[] parts = description.split(" /by ", 2);
 
         if (parts.length < 2) {
             System.out.println("A deadline needs a description and a /by date! :(");
-            return false;
+            return;
         }
 
         String info = parts[0].trim();
@@ -128,23 +121,22 @@ public class Gnaix {
 
         if (info.isEmpty() || by.isEmpty()) {
             System.out.println("A deadline needs a description and a /by date! :(");
-            return false;
+            return;
         }
 
-        tasks[taskNumber] = new Deadline(info, by);
+        tasks.add(new Deadline(info, by));
 
         System.out.println("Got it. I've added this task:");
-        System.out.println("  " + tasks[taskNumber]);
-        System.out.println("Now you have " + (taskNumber + 1) + " tasks in the list.");
-        return true;
+        System.out.println("  " + tasks.getLast());
+        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
     }
 
-    private static boolean addEvent(Task[] tasks, int taskNumber, String description) {
+    private static void addEvent(ArrayList<Task> tasks, String description) {
         String[] parts = description.split(" /from ", 2);
 
         if (parts.length < 2) {
             System.out.println("Not enough info given! :(");
-            return false;
+            return;
         }
 
         String info = parts[0].trim();
@@ -152,7 +144,7 @@ public class Gnaix {
 
         if (info.isEmpty() || times.length < 2) {
             System.out.println("An event needs a description and timings! :(");
-            return false;
+            return;
         }
 
         String from = times[0].trim();
@@ -160,47 +152,40 @@ public class Gnaix {
 
         if (from.isEmpty() || to.isEmpty()) {
             System.out.println("An event needs a /from time, and /to time! :(");
-            return false;
+            return;
         }
 
-        tasks[taskNumber] = new Event(info, from, to);
+        tasks.add(new Event(info, from, to));
 
         System.out.println("Got it. I've added this task:");
-        System.out.println("  " + tasks[taskNumber]);
-        System.out.println("Now you have " + (taskNumber + 1) + " tasks in the list.");
-        return true;
+        System.out.println("  " + tasks.getLast());
+        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
     }
 
-    private static void listTasks(Task[] tasks, int taskCount) {
+    private static void listTasks(ArrayList<Task> tasks) {
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println((i + 1) + ". " + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + ". " + tasks.get(i));
         }
     }
 
-    private static void completeTask(Task[] tasks, int taskNumber) {
-        tasks[taskNumber - 1].markAsComplete();
+    private static void completeTask(ArrayList<Task> tasks, int taskNumber) {
+        tasks.get(taskNumber - 1).markAsComplete();
         System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + tasks[taskNumber - 1]);
+        System.out.println("  " + tasks.get(taskNumber - 1));
     }
 
-    private static void uncompleteTask(Task[] tasks, int taskNumber) {
-        tasks[taskNumber - 1].markAsIncomplete();
+    private static void uncompleteTask(ArrayList<Task> tasks, int taskNumber) {
+        tasks.get(taskNumber - 1).markAsIncomplete();
         System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + tasks[taskNumber - 1]);
+        System.out.println("  " + tasks.get(taskNumber - 1));
     }
 
-    private static void deleteTask(Task[] tasks, int taskCount, int taskNumber) {
-        Task deletedTask = tasks[taskNumber - 1];
-
-        for (int i = taskNumber - 1; i < taskCount - 1; i++) {
-            tasks[i] = tasks[i + 1];
-        }
-
-        tasks[taskCount - 1] = null;
+    private static void deleteTask(ArrayList<Task> tasks, int taskNumber) {
+        Task deletedTask = tasks.remove(taskNumber - 1);
 
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + deletedTask);
-        System.out.println("Now you have " + (taskCount - 1) + " tasks in the list.");
+        System.out.println("Now you have " + (tasks.size()) + " tasks in the list.");
     }
 }
