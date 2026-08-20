@@ -21,11 +21,16 @@ public class Gnaix {
 
         while (true) {
             System.out.println(separator);
-            String cmd = scanner.nextLine();
+            String cmd = scanner.nextLine().trim();
 
-            String[] commandParts = cmd.trim().split("\\s+", 2);
+            if (cmd.isEmpty()) {
+                System.out.println("Please enter a command! :(");
+                continue;
+            }
+
+            String[] commandParts = cmd.split("\\s+", 2);
             String command = commandParts[0];
-            String arguments = commandParts.length > 1 ? commandParts[1].trim() : "";
+            String arguments = commandParts.length > 1 ? commandParts[1] : "";
 
             if (command.equals("bye")) {
                 break;
