@@ -1,6 +1,6 @@
 # UI Test Plan
 
-This file records command-line UI test cases for the current Level-5 Gnaix implementation.
+This file records command-line UI test cases for the current Level-6 Gnaix implementation.
 
 ## Setup
 
@@ -589,9 +589,431 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
+### Test Case 13: Delete a task from the middle of the list
+
+- Aim: Verify that `delete` removes a middle task and preserves the order of the remaining tasks.
+- Command:
+
+```bash
+java -cp out Gnaix
+```
+
+- Inputs:
+
+```text
+todo alpha
+todo beta
+todo gamma
+delete 2
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+  ____ _   _    _    _____  __
+ / ___| \ | |  / \  |_ _\ \/ /
+| |  _|  \| | / _ \  | | \  /
+| |_| | |\  |/ ___ \ | | /  \
+ \____|_| \_/_/   \_\___/_/\_\
+Hello! I'm Gnaix
+What can I do for you?
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] alpha
+Now you have 1 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] beta
+Now you have 2 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] gamma
+Now you have 3 tasks in the list.
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] beta
+Now you have 2 tasks in the list.
+____________________________________________________________
+Here are the tasks in your list:
+1. [T][ ] alpha
+2. [T][ ] gamma
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case 14: Delete the first task
+
+- Aim: Verify that `delete` removes the first task and renumbers the remaining tasks correctly.
+- Command:
+
+```bash
+java -cp out Gnaix
+```
+
+- Inputs:
+
+```text
+todo alpha
+deadline beta /by Friday
+event gamma /from 1pm /to 2pm
+delete 1
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+  ____ _   _    _    _____  __
+ / ___| \ | |  / \  |_ _\ \/ /
+| |  _|  \| | / _ \  | | \  /
+| |_| | |\  |/ ___ \ | | /  \
+ \____|_| \_/_/   \_\___/_/\_\
+Hello! I'm Gnaix
+What can I do for you?
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] alpha
+Now you have 1 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] beta (by: Friday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] gamma (from: 1pm to: 2pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] alpha
+Now you have 2 tasks in the list.
+____________________________________________________________
+Here are the tasks in your list:
+1. [D][ ] beta (by: Friday)
+2. [E][ ] gamma (from: 1pm to: 2pm)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case 15: Delete the last task
+
+- Aim: Verify that `delete` removes the last task without changing the earlier tasks.
+- Command:
+
+```bash
+java -cp out Gnaix
+```
+
+- Inputs:
+
+```text
+todo alpha
+deadline beta /by Friday
+event gamma /from 1pm /to 2pm
+delete 3
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+  ____ _   _    _    _____  __
+ / ___| \ | |  / \  |_ _\ \/ /
+| |  _|  \| | / _ \  | | \  /
+| |_| | |\  |/ ___ \ | | /  \
+ \____|_| \_/_/   \_\___/_/\_\
+Hello! I'm Gnaix
+What can I do for you?
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] alpha
+Now you have 1 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] beta (by: Friday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] gamma (from: 1pm to: 2pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+Noted. I've removed this task:
+  [E][ ] gamma (from: 1pm to: 2pm)
+Now you have 2 tasks in the list.
+____________________________________________________________
+Here are the tasks in your list:
+1. [T][ ] alpha
+2. [D][ ] beta (by: Friday)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case 16: Delete the only task in the list
+
+- Aim: Verify that `delete` can remove the only task and leave an empty list.
+- Command:
+
+```bash
+java -cp out Gnaix
+```
+
+- Inputs:
+
+```text
+todo solo
+delete 1
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+  ____ _   _    _    _____  __
+ / ___| \ | |  / \  |_ _\ \/ /
+| |  _|  \| | / _ \  | | \  /
+| |_| | |\  |/ ___ \ | | /  \
+ \____|_| \_/_/   \_\___/_/\_\
+Hello! I'm Gnaix
+What can I do for you?
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] solo
+Now you have 1 tasks in the list.
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] solo
+Now you have 0 tasks in the list.
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case 17: Reject invalid delete task numbers without changing the list
+
+- Aim: Verify that `delete` rejects missing, nonnumeric, zero, and too-large task numbers, and that each failed delete leaves the task list unchanged.
+- Command:
+
+```bash
+java -cp out Gnaix
+```
+
+- Inputs:
+
+```text
+todo alpha
+deadline beta /by Friday
+delete
+list
+delete abc
+list
+delete 0
+list
+delete 3
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+  ____ _   _    _    _____  __
+ / ___| \ | |  / \  |_ _\ \/ /
+| |  _|  \| | / _ \  | | \  /
+| |_| | |\  |/ ___ \ | | /  \
+ \____|_| \_/_/   \_\___/_/\_\
+Hello! I'm Gnaix
+What can I do for you?
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] alpha
+Now you have 1 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] beta (by: Friday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+That task number is not a number! :(
+____________________________________________________________
+Here are the tasks in your list:
+1. [T][ ] alpha
+2. [D][ ] beta (by: Friday)
+____________________________________________________________
+That task number is not a number! :(
+____________________________________________________________
+Here are the tasks in your list:
+1. [T][ ] alpha
+2. [D][ ] beta (by: Friday)
+____________________________________________________________
+That task number does not exist! :(
+____________________________________________________________
+Here are the tasks in your list:
+1. [T][ ] alpha
+2. [D][ ] beta (by: Friday)
+____________________________________________________________
+That task number does not exist! :(
+____________________________________________________________
+Here are the tasks in your list:
+1. [T][ ] alpha
+2. [D][ ] beta (by: Friday)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case 18: Delete preserves status and type of remaining tasks
+
+- Aim: Verify that deleting a task does not affect the completion status or task type of the remaining tasks.
+- Command:
+
+```bash
+java -cp out Gnaix
+```
+
+- Inputs:
+
+```text
+todo alpha
+deadline beta /by Friday
+event gamma /from 1pm /to 2pm
+mark 1
+mark 3
+delete 2
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+  ____ _   _    _    _____  __
+ / ___| \ | |  / \  |_ _\ \/ /
+| |  _|  \| | / _ \  | | \  /
+| |_| | |\  |/ ___ \ | | /  \
+ \____|_| \_/_/   \_\___/_/\_\
+Hello! I'm Gnaix
+What can I do for you?
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] alpha
+Now you have 1 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] beta (by: Friday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] gamma (from: 1pm to: 2pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+Nice! I've marked this task as done:
+  [T][X] alpha
+____________________________________________________________
+Nice! I've marked this task as done:
+  [E][X] gamma (from: 1pm to: 2pm)
+____________________________________________________________
+Noted. I've removed this task:
+  [D][ ] beta (by: Friday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+Here are the tasks in your list:
+1. [T][X] alpha
+2. [E][X] gamma (from: 1pm to: 2pm)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case 19: ArrayList refactoring preserves existing task behaviour
+
+- Aim: Verify that the ArrayList-based implementation preserves the existing `todo`, `deadline`, `event`, `list`, `mark`, and `unmark` behaviour.
+- Command:
+
+```bash
+java -cp out Gnaix
+```
+
+- Inputs:
+
+```text
+todo alpha
+deadline beta /by Friday
+event gamma /from 1pm /to 2pm
+list
+mark 2
+unmark 2
+list
+bye
+```
+
+- Expected output:
+
+```text
+____________________________________________________________
+  ____ _   _    _    _____  __
+ / ___| \ | |  / \  |_ _\ \/ /
+| |  _|  \| | / _ \  | | \  /
+| |_| | |\  |/ ___ \ | | /  \
+ \____|_| \_/_/   \_\___/_/\_\
+Hello! I'm Gnaix
+What can I do for you?
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] alpha
+Now you have 1 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] beta (by: Friday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] gamma (from: 1pm to: 2pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+Here are the tasks in your list:
+1. [T][ ] alpha
+2. [D][ ] beta (by: Friday)
+3. [E][ ] gamma (from: 1pm to: 2pm)
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] beta (by: Friday)
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [D][ ] beta (by: Friday)
+____________________________________________________________
+Here are the tasks in your list:
+1. [T][ ] alpha
+2. [D][ ] beta (by: Friday)
+3. [E][ ] gamma (from: 1pm to: 2pm)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
 ## Console Session Record
 
-The expected output above is based on this command-line session after compiling with `javac -d out src/main/java/*.java`.
+The expected output above is based on command-line sessions after compiling with `javac -d out src/main/java/*.java`.
 
 Command:
 
