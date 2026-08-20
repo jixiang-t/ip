@@ -89,6 +89,7 @@ public class Gnaix {
     }
 
     private static boolean addToDo(Task[] tasks, int taskNumber, String description) {
+        description = description.trim();
         if (description.isEmpty()) {
             System.out.println("NO DESCRIPTION GIVEN! :(");
             return false;
@@ -103,13 +104,20 @@ public class Gnaix {
 
     private static boolean addDeadline(Task[] tasks, int taskNumber, String description) {
         String[] parts = description.split(" /by ", 2);
-        if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+
+        if (parts.length < 2) {
             System.out.println("A deadline needs a description and a /by date! :(");
             return false;
         }
 
-        String info = parts[0];
-        String by = parts[1];
+        String info = parts[0].trim();
+        String by = parts[1].trim();
+
+        if (info.isEmpty() || by.isEmpty()) {
+            System.out.println("A deadline needs a description and a /by date! :(");
+            return false;
+        }
+
         tasks[taskNumber] = new Deadline(info, by);
 
         System.out.println("Got it. I've added this task:");
@@ -120,20 +128,28 @@ public class Gnaix {
 
     private static boolean addEvent(Task[] tasks, int taskNumber, String description) {
         String[] parts = description.split(" /from ", 2);
-        if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
-            System.out.println("An event needs a description, /from time, and /to time! :(");
+
+        if (parts.length < 2) {
+            System.out.println("Not enough info given! :(");
             return false;
         }
 
-        String info = parts[0];
+        String info = parts[0].trim();
         String[] times = parts[1].split(" /to ", 2);
-        if (times.length < 2 || times[0].trim().isEmpty() || times[1].trim().isEmpty()) {
-            System.out.println("An event needs a description, /from time, and /to time! :(");
+
+        if (info.isEmpty() || times.length < 2) {
+            System.out.println("An event needs a description and timings! :(");
             return false;
         }
 
-        String from = times[0];
-        String to = times[1];
+        String from = times[0].trim();
+        String to = times[1].trim();
+
+        if (from.isEmpty() || to.isEmpty()) {
+            System.out.println("An event needs a /from time, and /to time! :(");
+            return false;
+        }
+
         tasks[taskNumber] = new Event(info, from, to);
 
         System.out.println("Got it. I've added this task:");
