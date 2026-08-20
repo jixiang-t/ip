@@ -57,20 +57,19 @@ public class Gnaix {
                 }
 
             } else if (command.equals("todo")) {
-                if (arguments.isEmpty()) {
-                    System.out.println("NO DESCRIPTION GIVEN! :(");
-                } else {
-                    addToDo(tasks, taskCounter, arguments);
+                if (addToDo(tasks, taskCounter, arguments)) {
                     taskCounter++;
                 }
 
             } else if (command.equals("deadline")) {
-                addDeadline(tasks, taskCounter, arguments);
-                taskCounter++;
+                if (addDeadline(tasks, taskCounter, arguments)) {
+                    taskCounter++;
+                }
 
             } else if (command.equals("event")) {
-                addEvent(tasks, taskCounter, arguments);
-                taskCounter++;
+                if (addEvent(tasks, taskCounter, arguments)) {
+                    taskCounter++;
+                }
 
             } else {
                 System.out.println("That's not a valid command! :(");
@@ -84,15 +83,26 @@ public class Gnaix {
         System.out.println(separator);
     }
 
-    private static void addToDo(Task[] tasks, int taskNumber, String description) {
+    private static boolean addToDo(Task[] tasks, int taskNumber, String description) {
+        if (description.isEmpty()) {
+            System.out.println("NO DESCRIPTION GIVEN! :(");
+            return false;
+        }
+
         tasks[taskNumber] = new Todo(description);
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + tasks[taskNumber]);
         System.out.println("Now you have " + (taskNumber + 1) + " tasks in the list.");
+        return true;
     }
 
-    private static void addDeadline(Task[] tasks, int taskNumber, String description) {
+    private static boolean addDeadline(Task[] tasks, int taskNumber, String description) {
         String[] parts = description.split(" /by ", 2);
+        if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+            System.out.println("A deadline needs a description and a /by date! :(");
+            return false;
+        }
+
         String info = parts[0];
         String by = parts[1];
         tasks[taskNumber] = new Deadline(info, by);
@@ -100,13 +110,23 @@ public class Gnaix {
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + tasks[taskNumber]);
         System.out.println("Now you have " + (taskNumber + 1) + " tasks in the list.");
+        return true;
     }
 
-    private static void addEvent(Task[] tasks, int taskNumber, String description) {
+    private static boolean addEvent(Task[] tasks, int taskNumber, String description) {
         String[] parts = description.split(" /from ", 2);
-        String info = parts[0];
+        if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+            System.out.println("An event needs a description, /from time, and /to time! :(");
+            return false;
+        }
 
+        String info = parts[0];
         String[] times = parts[1].split(" /to ", 2);
+        if (times.length < 2 || times[0].trim().isEmpty() || times[1].trim().isEmpty()) {
+            System.out.println("An event needs a description, /from time, and /to time! :(");
+            return false;
+        }
+
         String from = times[0];
         String to = times[1];
         tasks[taskNumber] = new Event(info, from, to);
@@ -114,6 +134,7 @@ public class Gnaix {
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + tasks[taskNumber]);
         System.out.println("Now you have " + (taskNumber + 1) + " tasks in the list.");
+        return true;
     }
 
     private static void listTasks(Task[] tasks, int taskCount) {
