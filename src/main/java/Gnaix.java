@@ -61,6 +61,19 @@ public class Gnaix {
                     System.out.println("That task number is not a number! :(");
                 }
 
+            } else if (command.equals("delete")) {
+                try {
+                    int taskNumber = Integer.parseInt(arguments);
+
+                    if (taskNumber < 1 || taskNumber > taskCounter) {
+                        System.out.println("That task number does not exist! :(");
+                    } else {
+                        deleteTask(tasks, taskCounter, taskNumber);
+                        taskCounter--;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("That task number is not a number! :(");
+                }
             } else if (command.equals("todo")) {
                 if (addToDo(tasks, taskCounter, arguments)) {
                     taskCounter++;
@@ -175,5 +188,19 @@ public class Gnaix {
         tasks[taskNumber - 1].markAsIncomplete();
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println("  " + tasks[taskNumber - 1]);
+    }
+
+    private static void deleteTask(Task[] tasks, int taskCount, int taskNumber) {
+        Task deletedTask = tasks[taskNumber - 1];
+
+        for (int i = taskNumber - 1; i < taskCount - 1; i++) {
+            tasks[i] = tasks[i + 1];
+        }
+
+        tasks[taskCount - 1] = null;
+
+        System.out.println("Noted. I've removed this task:");
+        System.out.println("  " + deletedTask);
+        System.out.println("Now you have " + (taskCount - 1) + " tasks in the list.");
     }
 }
