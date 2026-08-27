@@ -1,9 +1,25 @@
 import java.io.IOException;
+import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.nio.file.Path;
 
 public class Gnaix {
+    private static final DateTimeFormatter INPUT_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+
+    private static final DateTimeFormatter OUTPUT_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy");
+
+    private static final DateTimeFormatter OUTPUT_DATE_TIME_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm");
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -109,6 +125,10 @@ public class Gnaix {
                     saveTasks(storage, tasks);
                     break;
 
+                case DATE:
+                    listTasksOnDate(tasks, arguments);
+                    break;
+
                 case UNKNOWN:
                     System.out.println("That's not a valid command! :(");
                     break;
@@ -150,11 +170,17 @@ public class Gnaix {
             return;
         }
 
-        tasks.add(new Deadline(info, by));
+        try {
+            LocalDate deadlineDate = LocalDate.parse(by, INPUT_DATE_FORMAT);
+            tasks.add(new Deadline(info, deadlineDate));
 
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + tasks.getLast());
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+            System.out.println("Got it. I've added this task:");
+            System.out.println("  " + tasks.getLast());
+            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+
+        } catch (DateTimeParseException e) {
+            System.out.println("Please enter the deadline as yyyy-MM-dd! :(");
+        }
     }
 
     private static void addEvent(ArrayList<Task> tasks, String description) {
@@ -181,11 +207,19 @@ public class Gnaix {
             return;
         }
 
-        tasks.add(new Event(info, from, to));
+        try {
+            LocalDateTime fromDateTime = LocalDateTime.parse(from, INPUT_DATE_TIME_FORMAT);
 
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + tasks.getLast());
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+            LocalDateTime toDateTime = LocalDateTime.parse(to, INPUT_DATE_TIME_FORMAT);
+
+            tasks.add(new Event(info, fromDateTime, toDateTime));
+
+            System.out.println("Got it. I've added this task:");
+            System.out.println("  " + tasks.getLast());
+            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+        } catch (DateTimeParseException e) {
+            System.out.println("Please enter event times as yyyy-MM-dd HHmm! :(");
+        }
     }
 
     private static void listTasks(ArrayList<Task> tasks) {
@@ -220,6 +254,46 @@ public class Gnaix {
             storage.save(tasks);
         } catch (IOException e) {
             System.out.println("I couldn't save your tasks! :(");
+        }
+    }
+
+    private static void listTasksOnDate(ArrayList<Task> tasks, String input) {
+        input = input.trim();
+        if (input.isEmpty()) {
+            System.out.println("Please provide a date in yyyy-MM-dd format! :(");
+            return;
+        }
+
+        try {
+            LocalDate date = LocalDate.parse(input, INPUT_DATE_FORMAT);
+            boolean found = false;
+
+            System.out.println("Tasks occurring on " + date.format(OUTPUT_DATE_FORMAT) + ":");
+            for (Task task : tasks) {
+                if (task instanceof Deadline) {
+                    Deadline deadline = (Deadline) task;
+                    if (deadline.getDoBy().equals(date)) {
+                        System.out.println(task);
+                        found = true;
+                    }
+                } else if (task instanceof Event) {
+                    Event event = (Event) task;
+
+                    LocalDate fromDate = event.getFrom().toLocalDate();
+                    LocalDate toDate = event.getTo().toLocalDate();
+
+                    if (!date.isBefore(fromDate) && !date.isAfter(toDate)) {
+                        System.out.println(task);
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) {
+                System.out.println("No deadlines or events found on that date.");
+            }
+        } catch (DateTimeParseException e) {
+            System.out.println("Please enter the date as yyyy-MM-dd! :(");
         }
     }
 }

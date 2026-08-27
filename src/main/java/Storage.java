@@ -3,6 +3,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,14 +89,17 @@ public class Storage {
                 if (parts.length != 4) {
                     throw new IllegalArgumentException("Invalid Deadline format");
                 }
-                task = new Deadline(parts[2], parts[3]);
+                task = new Deadline(parts[2], LocalDate.parse(parts[3]));
                 break;
 
             case "E":
                 if (parts.length != 5) {
                     throw new IllegalArgumentException("Invalid Event format");
                 }
-                task = new Event(parts[2], parts[3], parts[4]);
+                task = new Event(
+                        parts[2],
+                        LocalDateTime.parse(parts[3]),
+                        LocalDateTime.parse(parts[4]));
                 break;
 
             default:
