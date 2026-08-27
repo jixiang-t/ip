@@ -37,10 +37,16 @@ public class Storage {
     public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
 
+        if (!Files.exists(filePath)) {
+            return tasks;
+        }
+
         List<String> lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
 
         for (String line : lines) {
-            tasks.add(parseTask(line));
+            if (!line.isBlank()) {
+                tasks.add(parseTask(line));
+            }
         }
 
         return tasks;

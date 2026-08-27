@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.nio.file.Path;
 
 public class Gnaix {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         String separator = "____________________________________________________________";
@@ -20,7 +20,13 @@ public class Gnaix {
         System.out.println("What can I do for you?");
 
         Storage storage = new Storage(Path.of("data", "gnaix.txt"));
-        ArrayList<Task> tasks = storage.load();
+        ArrayList<Task> tasks;
+        try {
+            tasks = storage.load();
+        } catch (IOException e) {
+            System.out.println("I couldn't load your tasks. Starting with an empty list! :(");
+            tasks = new ArrayList<>();
+        }
         boolean isRunning = true;
 
         while (isRunning) {
@@ -52,7 +58,7 @@ public class Gnaix {
                             System.out.println("That task number does not exist! :(");
                         } else {
                             completeTask(tasks, taskNumber);
-                            storage.save(tasks);
+                            saveTasks(storage, tasks);
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("That task number is not a number! :(");
@@ -66,7 +72,7 @@ public class Gnaix {
                             System.out.println("That task number does not exist! :(");
                         } else {
                             uncompleteTask(tasks, taskNumber);
-                            storage.save(tasks);
+                            saveTasks(storage, tasks);
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("That task number is not a number! :(");
@@ -81,7 +87,7 @@ public class Gnaix {
                             System.out.println("That task number does not exist! :(");
                         } else {
                             deleteTask(tasks, taskNumber);
-                            storage.save(tasks);
+                            saveTasks(storage, tasks);
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("That task number is not a number! :(");
@@ -90,17 +96,17 @@ public class Gnaix {
 
                 case TODO:
                     addToDo(tasks, arguments);
-                    storage.save(tasks);
+                    saveTasks(storage, tasks);
                     break;
 
                 case DEADLINE:
                     addDeadline(tasks, arguments);
-                    storage.save(tasks);
+                    saveTasks(storage, tasks);
                     break;
 
                 case EVENT:
                     addEvent(tasks, arguments);
-                    storage.save(tasks);
+                    saveTasks(storage, tasks);
                     break;
 
                 case UNKNOWN:
@@ -207,5 +213,13 @@ public class Gnaix {
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + deletedTask);
         System.out.println("Now you have " + (tasks.size()) + " tasks in the list.");
+    }
+
+    private static void saveTasks(Storage storage, ArrayList<Task> tasks) {
+        try {
+            storage.save(tasks);
+        } catch (IOException e) {
+            System.out.println("I couldn't save your tasks! :(");
+        }
     }
 }

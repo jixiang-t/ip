@@ -1,3 +1,0 @@
-T | 1 | buy milk
-D | 0 | submit report | Friday
-E | 0 | meeting | Monday 2pm | Monday 3pm
