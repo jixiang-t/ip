@@ -19,8 +19,8 @@ public class Gnaix {
         System.out.println("Hello! I'm Gnaix");
         System.out.println("What can I do for you?");
 
-        ArrayList<Task> tasks = new ArrayList<>();
         Storage storage = new Storage(Path.of("data", "gnaix.txt"));
+        ArrayList<Task> tasks = storage.load();
         boolean isRunning = true;
 
         while (isRunning) {

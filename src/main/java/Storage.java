@@ -34,6 +34,51 @@ public class Storage {
                 StandardOpenOption.TRUNCATE_EXISTING);
     }
 
+    public ArrayList<Task> load() throws IOException {
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        List<String> lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+
+        for (String line : lines) {
+            tasks.add(parseTask(line));
+        }
+
+        return tasks;
+    }
+
+    private Task parseTask(String line) {
+        String[] parts = line.split("\\|", -1);
+        for (int i = 0; i < parts.length; i++) {
+            parts[i] = parts[i].trim();
+        }
+
+        String type = parts[0];
+        boolean completed = parts[1].equals("1");
+        Task task;
+
+        switch (type) {
+            case "T":
+                task = new Todo(parts[2]);
+                break;
+
+            case "D":
+                task = new Deadline(parts[2], parts[3]);
+                break;
+
+            case "E":
+                task = new Event(parts[2], parts[3], parts[4]);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unknown task type: " + type);
+        }
+
+        if (completed) {
+            task.markAsComplete();
+        }
+        return task;
+    }
+
     private String taskToString(Task task) {
         int completed = task.isCompleted() ? 1 : 0;
 
