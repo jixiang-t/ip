@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class Task {
     private String description;
     private boolean completed;
@@ -29,5 +31,8 @@ public class Task {
     public boolean isCompleted() {
         return this.completed;
     }
-
+    
+    public boolean occursOn(LocalDate date) {
+        return false;
+    }
 }

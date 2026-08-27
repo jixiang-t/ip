@@ -1,4 +1,5 @@
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Event extends Task {
@@ -19,6 +20,13 @@ public class Event extends Task {
 
     public LocalDateTime getTo() {
         return this.to;
+    }
+
+    @Override
+    public boolean occursOn(LocalDate date) {
+        LocalDate fromDate = this.from.toLocalDate();
+        LocalDate toDate = this.to.toLocalDate();
+        return !date.isBefore(fromDate) && !date.isAfter(toDate);
     }
 
     @Override
