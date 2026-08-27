@@ -1,8 +1,10 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.nio.file.Path;
 
 public class Gnaix {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
 
         String separator = "____________________________________________________________";
@@ -18,6 +20,7 @@ public class Gnaix {
         System.out.println("What can I do for you?");
 
         ArrayList<Task> tasks = new ArrayList<>();
+        Storage storage = new Storage(Path.of("data", "gnaix.txt"));
         boolean isRunning = true;
 
         while (isRunning) {
@@ -49,6 +52,7 @@ public class Gnaix {
                             System.out.println("That task number does not exist! :(");
                         } else {
                             completeTask(tasks, taskNumber);
+                            storage.save(tasks);
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("That task number is not a number! :(");
@@ -62,6 +66,7 @@ public class Gnaix {
                             System.out.println("That task number does not exist! :(");
                         } else {
                             uncompleteTask(tasks, taskNumber);
+                            storage.save(tasks);
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("That task number is not a number! :(");
@@ -76,6 +81,7 @@ public class Gnaix {
                             System.out.println("That task number does not exist! :(");
                         } else {
                             deleteTask(tasks, taskNumber);
+                            storage.save(tasks);
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("That task number is not a number! :(");
@@ -84,14 +90,17 @@ public class Gnaix {
 
                 case TODO:
                     addToDo(tasks, arguments);
+                    storage.save(tasks);
                     break;
 
                 case DEADLINE:
                     addDeadline(tasks, arguments);
+                    storage.save(tasks);
                     break;
 
                 case EVENT:
                     addEvent(tasks, arguments);
+                    storage.save(tasks);
                     break;
 
                 case UNKNOWN:
