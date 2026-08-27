@@ -1,11 +1,25 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Gnaix {
+    private static final DateTimeFormatter INPUT_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+
+    private static final DateTimeFormatter OUTPUT_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy");
+
+    private static final DateTimeFormatter OUTPUT_DATE_TIME_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm");
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -152,11 +166,17 @@ public class Gnaix {
             return;
         }
 
-        tasks.add(new Deadline(info, LocalDate.parse(by)));
+        try {
+            LocalDate deadlineDate = LocalDate.parse(by, INPUT_DATE_FORMAT);
+            tasks.add(new Deadline(info, deadlineDate));
 
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + tasks.getLast());
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+            System.out.println("Got it. I've added this task:");
+            System.out.println("  " + tasks.getLast());
+            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+
+        } catch (DateTimeParseException e) {
+            System.out.println("Please enter the deadline as yyyy-MM-dd! :(");
+        }
     }
 
     private static void addEvent(ArrayList<Task> tasks, String description) {
@@ -183,11 +203,19 @@ public class Gnaix {
             return;
         }
 
-        tasks.add(new Event(info, LocalDateTime.parse(from), LocalDateTime.parse(to)));
+        try {
+            LocalDateTime fromDateTime = LocalDateTime.parse(from, INPUT_DATE_TIME_FORMAT);
 
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + tasks.getLast());
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+            LocalDateTime toDateTime = LocalDateTime.parse(to, INPUT_DATE_TIME_FORMAT);
+
+            tasks.add(new Event(info, fromDateTime, toDateTime));
+
+            System.out.println("Got it. I've added this task:");
+            System.out.println("  " + tasks.getLast());
+            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+        } catch (DateTimeParseException e) {
+            System.out.println("Please enter event times as yyyy-MM-dd HHmm! :(");
+        }
     }
 
     private static void listTasks(ArrayList<Task> tasks) {
