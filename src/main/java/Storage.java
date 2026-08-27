@@ -44,8 +44,14 @@ public class Storage {
         List<String> lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
 
         for (String line : lines) {
-            if (!line.isBlank()) {
+            if (line.isBlank()) {
+                continue;
+            }
+
+            try {
                 tasks.add(parseTask(line));
+            } catch (IllegalArgumentException e) {
+                System.out.println("corrupted task data :(");
             }
         }
 
@@ -58,20 +64,36 @@ public class Storage {
             parts[i] = parts[i].trim();
         }
 
+        if (parts.length < 3) {
+            throw new IllegalArgumentException("Invalid task format :(");
+        }
+
         String type = parts[0];
+        if (!parts[1].equals("0") && !parts[1].equals("1")) {
+            throw new IllegalArgumentException("Invalid completion status :(");
+        }
         boolean completed = parts[1].equals("1");
         Task task;
 
         switch (type) {
             case "T":
+                if (parts.length != 3) {
+                    throw new IllegalArgumentException("Invalid Todo format");
+                }
                 task = new Todo(parts[2]);
                 break;
 
             case "D":
+                if (parts.length != 4) {
+                    throw new IllegalArgumentException("Invalid Deadline format");
+                }
                 task = new Deadline(parts[2], parts[3]);
                 break;
 
             case "E":
+                if (parts.length != 5) {
+                    throw new IllegalArgumentException("Invalid Event format");
+                }
                 task = new Event(parts[2], parts[3], parts[4]);
                 break;
 
