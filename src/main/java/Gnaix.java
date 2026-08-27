@@ -36,12 +36,12 @@ public class Gnaix {
         System.out.println("What can I do for you?");
 
         Storage storage = new Storage(Path.of("data", "gnaix.txt"));
-        ArrayList<Task> tasks;
+        TaskList tasks;
         try {
-            tasks = storage.load();
+            tasks = new TaskList(storage.load());
         } catch (IOException e) {
             System.out.println("I couldn't load your tasks. Starting with an empty list! :(");
-            tasks = new ArrayList<>();
+            tasks = new TaskList();
         }
         boolean isRunning = true;
 
@@ -141,7 +141,7 @@ public class Gnaix {
         System.out.println(separator);
     }
 
-    private static void addToDo(ArrayList<Task> tasks, String description) {
+    private static void addToDo(TaskList tasks, String description) {
         description = description.trim();
         if (description.isEmpty()) {
             System.out.println("NO DESCRIPTION GIVEN! :(");
@@ -154,7 +154,7 @@ public class Gnaix {
         System.out.println("Now you have " + (tasks.size()) + " tasks in the list.");
     }
 
-    private static void addDeadline(ArrayList<Task> tasks, String description) {
+    private static void addDeadline(TaskList tasks, String description) {
         String[] parts = description.split(" /by ", 2);
 
         if (parts.length < 2) {
@@ -183,7 +183,7 @@ public class Gnaix {
         }
     }
 
-    private static void addEvent(ArrayList<Task> tasks, String description) {
+    private static void addEvent(TaskList tasks, String description) {
         String[] parts = description.split(" /from ", 2);
 
         if (parts.length < 2) {
@@ -222,42 +222,42 @@ public class Gnaix {
         }
     }
 
-    private static void listTasks(ArrayList<Task> tasks) {
+    private static void listTasks(TaskList tasks) {
         System.out.println("Here are the tasks in your list:");
+
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + ". " + tasks.get(i));
         }
     }
 
-    private static void completeTask(ArrayList<Task> tasks, int taskNumber) {
-        tasks.get(taskNumber - 1).markAsComplete();
+    private static void completeTask(TaskList tasks, int taskNumber) {
+        tasks.mark(taskNumber - 1);
         System.out.println("Nice! I've marked this task as done:");
         System.out.println("  " + tasks.get(taskNumber - 1));
     }
 
-    private static void uncompleteTask(ArrayList<Task> tasks, int taskNumber) {
-        tasks.get(taskNumber - 1).markAsIncomplete();
+    private static void uncompleteTask(TaskList tasks, int taskNumber) {
+        tasks.unmark(taskNumber - 1);
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println("  " + tasks.get(taskNumber - 1));
     }
 
-    private static void deleteTask(ArrayList<Task> tasks, int taskNumber) {
-        Task deletedTask = tasks.remove(taskNumber - 1);
-
+    private static void deleteTask(TaskList tasks, int taskNumber) {
+        Task deletedTask = tasks.delete(taskNumber - 1);
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + deletedTask);
-        System.out.println("Now you have " + (tasks.size()) + " tasks in the list.");
+        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
     }
 
-    private static void saveTasks(Storage storage, ArrayList<Task> tasks) {
+    private static void saveTasks(Storage storage, TaskList tasks) {
         try {
-            storage.save(tasks);
+            storage.save(tasks.getTasks());
         } catch (IOException e) {
             System.out.println("I couldn't save your tasks! :(");
         }
     }
 
-    private static void listTasksOnDate(ArrayList<Task> tasks, String input) {
+    private static void listTasksOnDate(TaskList tasks, String input) {
         input = input.trim();
         if (input.isEmpty()) {
             System.out.println("Please provide a date in yyyy-MM-dd format! :(");
