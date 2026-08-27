@@ -1,3 +1,10 @@
+package gnaix;
+
+import gnaix.task.Deadline;
+import gnaix.task.Event;
+import gnaix.task.Task;
+import gnaix.task.Todo;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

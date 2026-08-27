@@ -1,3 +1,8 @@
+package gnaix;
+
+import gnaix.task.Task;
+import gnaix.task.TaskList;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;

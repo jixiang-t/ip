@@ -1,3 +1,7 @@
+package gnaix;
+
+import gnaix.task.Task;
+
 import java.time.LocalDate;
 
 public class ParsedCommand {
