@@ -1,11 +1,11 @@
 ---
 name: test-ui
-description: Run command-line UI test cases from explicit commands and expected outputs, recording the plan and console transcript for this Java project.
+description: Run command-line Ui test cases from explicit commands and expected outputs, recording the plan and console transcript for this Java project.
 ---
 
-# Test UI
+# Test Ui
 
-Use this skill when the user provides, requests, or wants to run command-line UI test cases for this project. The test cases are described as commands to run and expected console output.
+Use this skill when the user provides, requests, or wants to run command-line Ui test cases for this project. The test cases are described as commands to run and expected console output.
 
 ## Test Plan
 

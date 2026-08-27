@@ -1,6 +1,6 @@
-# UI Test Plan
+# Ui Test Plan
 
-This file records command-line UI test cases for the current Level-6 Gnaix implementation.
+This file records command-line Ui test cases for the current Level-6 Gnaix implementation.
 
 ## Setup
 
