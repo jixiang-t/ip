@@ -1,3 +1,10 @@
+package gnaix;
+
+import gnaix.task.Deadline;
+import gnaix.task.Event;
+import gnaix.task.Task;
+import gnaix.task.Todo;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

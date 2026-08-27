@@ -1,3 +1,5 @@
+package gnaix;
+
 public enum Command {
     BYE,
     LIST,
