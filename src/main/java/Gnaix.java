@@ -1,7 +1,9 @@
 import java.io.IOException;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.nio.file.Path;
 
 public class Gnaix {
     public static void main(String[] args) {
@@ -150,7 +152,7 @@ public class Gnaix {
             return;
         }
 
-        tasks.add(new Deadline(info, by));
+        tasks.add(new Deadline(info, LocalDate.parse(by)));
 
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + tasks.getLast());
@@ -181,7 +183,7 @@ public class Gnaix {
             return;
         }
 
-        tasks.add(new Event(info, from, to));
+        tasks.add(new Event(info, LocalDateTime.parse(from), LocalDateTime.parse(to)));
 
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + tasks.getLast());
