@@ -125,6 +125,10 @@ public class Gnaix {
                     saveTasks(storage, tasks);
                     break;
 
+                case DATE:
+                    listTasksOnDate(tasks, arguments);
+                    break;
+
                 case UNKNOWN:
                     System.out.println("That's not a valid command! :(");
                     break;
@@ -250,6 +254,46 @@ public class Gnaix {
             storage.save(tasks);
         } catch (IOException e) {
             System.out.println("I couldn't save your tasks! :(");
+        }
+    }
+
+    private static void listTasksOnDate(ArrayList<Task> tasks, String input) {
+        input = input.trim();
+        if (input.isEmpty()) {
+            System.out.println("Please provide a date in yyyy-MM-dd format! :(");
+            return;
+        }
+
+        try {
+            LocalDate date = LocalDate.parse(input, INPUT_DATE_FORMAT);
+            boolean found = false;
+
+            System.out.println("Tasks occurring on " + date.format(OUTPUT_DATE_FORMAT) + ":");
+            for (Task task : tasks) {
+                if (task instanceof Deadline) {
+                    Deadline deadline = (Deadline) task;
+                    if (deadline.getDoBy().equals(date)) {
+                        System.out.println(task);
+                        found = true;
+                    }
+                } else if (task instanceof Event) {
+                    Event event = (Event) task;
+
+                    LocalDate fromDate = event.getFrom().toLocalDate();
+                    LocalDate toDate = event.getTo().toLocalDate();
+
+                    if (!date.isBefore(fromDate) && !date.isAfter(toDate)) {
+                        System.out.println(task);
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) {
+                System.out.println("No deadlines or events found on that date.");
+            }
+        } catch (DateTimeParseException e) {
+            System.out.println("Please enter the date as yyyy-MM-dd! :(");
         }
     }
 }

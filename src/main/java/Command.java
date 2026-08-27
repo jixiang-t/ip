@@ -7,6 +7,7 @@ public enum Command {
     TODO,
     DEADLINE,
     EVENT,
+    DATE,
     UNKNOWN;
 
     public static Command fromString(String input) {
