@@ -9,14 +9,16 @@ public class ParsedCommand {
     private final Task task;
     private final int index;
     private final LocalDate date;
+    private final String keyword;
     private final String error;
 
     private ParsedCommand(Command command, Task task, int index,
-                          LocalDate date, String error) {
+                          LocalDate date, String keyword, String error) {
         this.command = command;
         this.task = task;
         this.index = index;
         this.date = date;
+        this.keyword = keyword;
         this.error = error;
     }
 
@@ -27,7 +29,7 @@ public class ParsedCommand {
      * @return Parsed command containing the command.
      */
     public static ParsedCommand of(Command command) {
-        return new ParsedCommand(command, null, -1, null, null);
+        return new ParsedCommand(command, null, -1, null, null, null);
     }
 
     /**
@@ -38,7 +40,7 @@ public class ParsedCommand {
      * @return Parsed command containing the task.
      */
     public static ParsedCommand forTask(Command command, Task task) {
-        return new ParsedCommand(command, task, -1, null, null);
+        return new ParsedCommand(command, task, -1, null, null, null);
     }
 
     /**
@@ -49,7 +51,7 @@ public class ParsedCommand {
      * @return Parsed command containing the index.
      */
     public static ParsedCommand forIndex(Command command, int index) {
-        return new ParsedCommand(command, null, index, null, null);
+        return new ParsedCommand(command, null, index, null, null, null);
     }
 
     /**
@@ -59,7 +61,7 @@ public class ParsedCommand {
      * @return Parsed command containing the date.
      */
     public static ParsedCommand forDate(LocalDate date) {
-        return new ParsedCommand(Command.DATE, null, -1, date, null);
+        return new ParsedCommand(Command.DATE, null, -1, date, null, null);
     }
 
     /**
@@ -69,7 +71,17 @@ public class ParsedCommand {
      * @return Parsed command containing the error.
      */
     public static ParsedCommand error(String message) {
-        return new ParsedCommand(Command.UNKNOWN, null, -1, null, message);
+        return new ParsedCommand(Command.UNKNOWN, null, -1, null, null, message);
+    }
+
+    /**
+     * Creates a parsed command containing a search keyword.
+     *
+     * @param keyword Keyword to search for in task descriptions.
+     * @return Parsed command containing the keyword.
+     */
+    public static ParsedCommand forKeyword(String keyword) {
+        return new ParsedCommand(Command.FIND, null, -1, null, keyword, null);
     }
 
     /**
@@ -99,5 +111,9 @@ public class ParsedCommand {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public String getKeyword() {
+        return this.keyword;
     }
 }

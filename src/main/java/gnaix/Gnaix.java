@@ -71,6 +71,9 @@ public class Gnaix {
                 case DATE:
                     listTasksOnDate(parsed.getDate());
                     break;
+                case FIND:
+                    findTasks(parsed.getKeyword());
+                    break;
                 default:
                     // Unreachable: error inputs are handled above.
                     break;
@@ -175,6 +178,25 @@ public class Gnaix {
             storage.save(tasks.getTasks());
         } catch (IOException e) {
             ui.showError("I couldn't save your tasks! :(");
+        }
+    }
+
+    private static void findTasks(String keyword) {
+        ui.showMessage("Here are the matching tasks in your list:");
+
+        boolean found = false;
+
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                ui.showMessage((i + 1) + ". " + task);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            ui.showMessage("No matching tasks found :(");
         }
     }
 }

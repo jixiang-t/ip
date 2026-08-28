@@ -48,6 +48,8 @@ public class Parser {
                 return parseEvent(args);
             case DATE:
                 return parseDate(args);
+            case FIND:
+                return parseFind(args);
             default:
                 return ParsedCommand.error("That's not a valid command! :(");
         }
@@ -163,5 +165,14 @@ public class Parser {
         } catch (DateTimeParseException e) {
             return ParsedCommand.error("Please enter the date as yyyy-MM-dd! :(");
         }
+    }
+
+    private static ParsedCommand parseFind(String args) {
+        if (args.isEmpty()) {
+            return ParsedCommand.error(
+                    "Please provide a keyword to search for! :(");
+        }
+
+        return ParsedCommand.forKeyword(args);
     }
 }

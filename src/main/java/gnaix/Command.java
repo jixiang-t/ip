@@ -13,6 +13,7 @@ public enum Command {
     DEADLINE,
     EVENT,
     DATE,
+    FIND,
     UNKNOWN;
 
     /**
