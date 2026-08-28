@@ -20,31 +20,63 @@ public class ParsedCommand {
         this.error = error;
     }
 
-    /** For BYE, LIST */
+    /**
+     * Creates a parsed command that does not require additional data.
+     *
+     * @param command Command represented by this result.
+     * @return Parsed command containing the command.
+     */
     public static ParsedCommand of(Command command) {
         return new ParsedCommand(command, null, -1, null, null);
     }
 
-    /** For TODO, DEADLINE, EVENT */
+    /**
+     * Creates a parsed command containing a task.
+     *
+     * @param command Command represented by this result.
+     * @param task Task created from the user's input.
+     * @return Parsed command containing the task.
+     */
     public static ParsedCommand forTask(Command command, Task task) {
         return new ParsedCommand(command, task, -1, null, null);
     }
 
-    /** For MARK, UNMARK, DELETE */
+    /**
+     * Creates a parsed command containing a task index.
+     *
+     * @param command Command represented by this result.
+     * @param index Task index supplied by the user.
+     * @return Parsed command containing the index.
+     */
     public static ParsedCommand forIndex(Command command, int index) {
         return new ParsedCommand(command, null, index, null, null);
     }
 
-    /** For DATE **/
+    /**
+     * Creates a parsed command containing a date.
+     *
+     * @param date Date supplied by the user.
+     * @return Parsed command containing the date.
+     */
     public static ParsedCommand forDate(LocalDate date) {
         return new ParsedCommand(Command.DATE, null, -1, date, null);
     }
 
-    /** For input the Parser could not understand; carries the message to show. */
+    /**
+     * Creates a parsed command representing an error.
+     *
+     * @param message Error message describing the problem.
+     * @return Parsed command containing the error.
+     */
     public static ParsedCommand error(String message) {
         return new ParsedCommand(Command.UNKNOWN, null, -1, null, message);
     }
 
+    /**
+     * Returns whether this parsed command contains an error.
+     *
+     * @return True if an error is present.
+     */
     public boolean hasError() {
         return error != null;
     }
