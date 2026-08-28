@@ -212,4 +212,23 @@ class ParserTest {
                 "That task number is not a number! :(",
                 result.getError());
     }
+
+    @Test
+    void parse_validFindCommand_keywordReturned() {
+        ParsedCommand result = Parser.parse("find book");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.FIND, result.getCommand());
+        assertEquals("book", result.getKeyword());
+    }
+
+    @Test
+    void parseFind_missingKeyword_errorReturned() {
+        ParsedCommand result = Parser.parse("find");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "Please provide a keyword to search for! :(",
+                result.getError());
+    }
 }
