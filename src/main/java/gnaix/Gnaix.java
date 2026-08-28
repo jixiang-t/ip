@@ -1,12 +1,12 @@
 package gnaix;
 
-import gnaix.task.Task;
-import gnaix.task.TaskList;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import gnaix.task.Task;
+import gnaix.task.TaskList;
 
 public class Gnaix {
     private static final Path FILE_PATH = Path.of("data", "gnaix.txt");

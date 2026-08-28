@@ -1,14 +1,13 @@
 package gnaix;
 
-import gnaix.task.Deadline;
-import gnaix.task.Event;
-import gnaix.task.Task;
-import gnaix.task.Todo;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import gnaix.task.Deadline;
+import gnaix.task.Event;
+import gnaix.task.Todo;
 
 public class Parser {
     private static final DateTimeFormatter INPUT_DATE_FORMAT =
@@ -79,7 +78,9 @@ public class Parser {
 
         try {
             LocalDate doBy = LocalDate.parse(by, INPUT_DATE_FORMAT);
-            return ParsedCommand.forTask(Command.DEADLINE, new Deadline(info, doBy));
+            return ParsedCommand.forTask(
+                    Command.DEADLINE,
+                    new Deadline(info, doBy));
         } catch (DateTimeParseException e) {
             return ParsedCommand.error("Please enter the deadline as yyyy-MM-dd! :(");
         }
@@ -111,7 +112,8 @@ public class Parser {
             return ParsedCommand.forTask(Command.EVENT,
                     new Event(info, fromDateTime, toDateTime));
         } catch (DateTimeParseException e) {
-            return ParsedCommand.error("Please enter event times as yyyy-MM-dd HHmm! :(");
+            return ParsedCommand.error(
+                    "Please enter event times as yyyy-MM-dd HHmm! :(");
         }
     }
 
