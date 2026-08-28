@@ -10,6 +10,7 @@ public enum Command {
     DEADLINE,
     EVENT,
     DATE,
+    FIND,
     UNKNOWN;
 
     public static Command fromString(String input) {
