@@ -1,5 +1,8 @@
 package gnaix;
 
+/**
+ * Represents the commands supported by Gnaix.
+ */
 public enum Command {
     BYE,
     LIST,
@@ -12,6 +15,12 @@ public enum Command {
     DATE,
     UNKNOWN;
 
+    /**
+     * Converts a user input string into its corresponding command.
+     *
+     * @param input User input representing a command.
+     * @return The matching command, or UNKNOWN if the input is invalid.
+     */
     public static Command fromString(String input) {
         try {
             return Command.valueOf(input.toUpperCase());

@@ -15,13 +15,27 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents persistent storage for Gnaix tasks.
+ */
 public class Storage {
     private final Path filePath;
 
+    /**
+     * Creates storage using the specified file path.
+     *
+     * @param filePath Path to the task data file.
+     */
     public Storage(Path filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Saves all tasks to the storage file.
+     *
+     * @param tasks Tasks to persist.
+     * @throws IOException If the file cannot be written.
+     */
     public void save(List<Task> tasks) throws IOException {
         Path parent = filePath.getParent();
 
@@ -43,6 +57,12 @@ public class Storage {
                 StandardOpenOption.TRUNCATE_EXISTING);
     }
 
+    /**
+     * Loads tasks from the storage file.
+     *
+     * @return Tasks loaded from the file, or an empty list if the file does not exist.
+     * @throws IOException If the file cannot be read.
+     */
     public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
 
@@ -67,6 +87,13 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Parses a stored task record into a task object.
+     *
+     * @param line Stored task record.
+     * @return Task represented by the record.
+     * @throws IllegalArgumentException If the record has an invalid format.
+     */
     private Task parseTask(String line) {
         String[] parts = line.split("\\|", -1);
         for (int i = 0; i < parts.length; i++) {
@@ -119,6 +146,13 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Converts a task into its persistent storage representation.
+     *
+     * @param task Task to serialize.
+     * @return String representation suitable for storage.
+     * @throws IllegalArgumentException If the task type is unsupported.
+     */
     private String taskToString(Task task) {
         int completed = task.isCompleted() ? 1 : 0;
 
