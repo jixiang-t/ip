@@ -17,6 +17,12 @@ public class Parser {
     private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
 
+    /**
+     * Parses a full user command into a structured result.
+     *
+     * @param fullCommand Complete command entered by the user.
+     * @return Parsed representation of the command or an error.
+     */
     public static ParsedCommand parse(String fullCommand) {
         String trimmed = fullCommand.trim();
         if (trimmed.isEmpty()) {
@@ -48,6 +54,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a task index from the supplied command arguments.
+     *
+     * @param command Command containing the index.
+     * @param args User-supplied index arguments.
+     * @return Parsed command containing the task index or an error.
+     */
     private static ParsedCommand parseIndex(Command command, String args) {
         try {
             return ParsedCommand.forIndex(command, Integer.parseInt(args.trim()));
@@ -56,6 +69,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a todo task from the supplied arguments.
+     *
+     * @param args User-supplied todo description.
+     * @return Parsed command containing the todo task or an error.
+     */
     private static ParsedCommand parseTodo(String args) {
         if (args.isEmpty()) {
             return ParsedCommand.error("NO DESCRIPTION GIVEN! :(");
@@ -63,6 +82,12 @@ public class Parser {
         return ParsedCommand.forTask(Command.TODO, new Todo(args));
     }
 
+    /**
+     * Parses a deadline task from the supplied arguments.
+     *
+     * @param args User-supplied deadline description and date.
+     * @return Parsed command containing the deadline task or an error.
+     */
     private static ParsedCommand parseDeadline(String args) {
         String[] segments = args.split(" /by ", 2);
         if (segments.length < 2) {
@@ -85,6 +110,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses an event task from the supplied arguments.
+     *
+     * @param args User-supplied event description and timing information.
+     * @return Parsed command containing the event task or an error.
+     */
     private static ParsedCommand parseEvent(String args) {
         String[] parts = args.split(" /from ", 2);
         if (parts.length < 2) {
@@ -115,6 +146,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a date from the supplied arguments.
+     *
+     * @param args User-supplied date.
+     * @return Parsed command containing the date or an error.
+     */
     private static ParsedCommand parseDate(String args) {
         if (args.isEmpty()) {
             return ParsedCommand.error("Please provide a date in yyyy-MM-dd format! :(");

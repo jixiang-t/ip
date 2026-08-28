@@ -1,13 +1,22 @@
 package gnaix.task;
 
-import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+/**
+ * Represents a task that must be completed by a specific date.
+ */
 public class Deadline extends Task {
     private LocalDate doBy;
     private static final DateTimeFormatter OUTPUT_DATE_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
 
+    /**
+     * Creates a deadline task with the given description and due date.
+     *
+     * @param description Description of the deadline.
+     * @param doBy Date by which the task should be completed.
+     */
     public Deadline(String description, LocalDate doBy) {
         super(description);
         this.doBy = doBy;
@@ -17,11 +26,22 @@ public class Deadline extends Task {
         return this.doBy;
     }
 
+    /**
+     * Returns whether the deadline occurs on the specified date.
+     *
+     * @param date Date to check.
+     * @return True if the deadline falls on the specified date.
+     */
     @Override
     public boolean occursOn(LocalDate date) {
         return this.doBy.equals(date);
     }
 
+    /**
+     * Returns the deadline task with its due date.
+     *
+     * @return String representation of the deadline task.
+     */
     @Override
     public String toString() {
         return "[D]" + super.toString()

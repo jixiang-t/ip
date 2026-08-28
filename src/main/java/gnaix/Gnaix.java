@@ -8,6 +8,9 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Runs the Gnaix task management application.
+ */
 public class Gnaix {
     private static final Path FILE_PATH = Path.of("data", "gnaix.txt");
 
@@ -18,6 +21,11 @@ public class Gnaix {
     private static final Storage storage = new Storage(FILE_PATH);
     private static TaskList tasks;
 
+    /**
+     * Starts the Gnaix application.
+     *
+     * @param args Command-line arguments.
+     */
     public static void main(String[] args) {
         ui.showWelcome();
 
@@ -72,12 +80,22 @@ public class Gnaix {
         ui.showGoodbye();
     }
 
+    /**
+     * Adds a task to the task list and saves the updated list.
+     *
+     * @param task Task to add.
+     */
     private static void addTask(Task task) {
         tasks.add(task);
         ui.showTaskAdded(task, tasks.size());
         save();
     }
 
+    /**
+     * Marks the specified task as complete.
+     *
+     * @param index One-based task number entered by the user.
+     */
     private static void markTask(int index) {
         if (!isInRange(index)) {
             ui.showError("That task number does not exist! :(");
@@ -88,6 +106,11 @@ public class Gnaix {
         save();
     }
 
+    /**
+     * Marks the specified task as incomplete.
+     *
+     * @param index One-based task number entered by the user.
+     */
     private static void unmarkTask(int index) {
         if (!isInRange(index)) {
             ui.showError("That task number does not exist! :(");
@@ -98,6 +121,11 @@ public class Gnaix {
         save();
     }
 
+    /**
+     * Deletes the specified task from the task list.
+     *
+     * @param index One-based task number entered by the user.
+     */
     private static void deleteTask(int index) {
         if (!isInRange(index)) {
             ui.showError("That task number does not exist! :(");
@@ -108,6 +136,11 @@ public class Gnaix {
         save();
     }
 
+    /**
+     * Displays tasks occurring on the specified date.
+     *
+     * @param date Date for which tasks should be displayed.
+     */
     private static void listTasksOnDate(LocalDate date) {
         ui.showMessage("Tasks occurring on " + date.format(OUTPUT_DATE_FORMAT) + ":");
 
@@ -124,10 +157,19 @@ public class Gnaix {
         }
     }
 
+    /**
+     * Returns whether a one-based task index refers to an existing task.
+     *
+     * @param index One-based task number.
+     * @return True if the index is within the current task list.
+     */
     private static boolean isInRange(int index) {
         return index >= 1 && index <= tasks.size();
     }
 
+    /**
+     * Saves the current task list to persistent storage.
+     */
     private static void save() {
         try {
             storage.save(tasks.getTasks());
