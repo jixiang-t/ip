@@ -8,7 +8,7 @@ import javafx.application.Application;
 public class Launcher {
 
     /**
-     * Launches the Gnaix application.
+     * Launches Gnaix.
      *
      * @param args Command-line arguments.
      */

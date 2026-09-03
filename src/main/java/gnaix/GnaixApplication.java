@@ -18,7 +18,7 @@ public class GnaixApplication extends Application {
     /**
      * Starts the Gnaix GUI.
      *
-     * @param stage primary JavaFX stage
+     * @param stage Primary JavaFX stage.
      */
     @Override
     public void start(Stage stage) {

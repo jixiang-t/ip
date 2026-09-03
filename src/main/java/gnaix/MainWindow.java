@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -11,6 +12,11 @@ import javafx.scene.layout.VBox;
  * Controller for the main Gnaix GUI.
  */
 public class MainWindow extends AnchorPane {
+    private final Image userImage =
+            new Image(getClass().getResourceAsStream("/images/Stewie.png"));
+
+    private final Image gnaixImage =
+            new Image(getClass().getResourceAsStream("/images/Brian.png"));
 
     @FXML
     private ScrollPane scrollPane;
@@ -36,7 +42,15 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Handles user input submitted through the GUI.
+     * Initializes the main window.
+     */
+    @FXML
+    public void initialize() {
+        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+    }
+
+    /**
+     * Handles a command entered by the user.
      */
     @FXML
     private void handleUserInput() {
@@ -46,7 +60,13 @@ public class MainWindow extends AnchorPane {
             return;
         }
 
-        // We will connect this to Gnaix next.
+        String response = gnaix.getResponse(input);
+
+        dialogContainer.getChildren().addAll(
+                DialogBox.getUserDialog(input, userImage),
+                DialogBox.getGnaixDialog(response, gnaixImage)
+        );
+
         userInput.clear();
     }
 }
