@@ -9,6 +9,9 @@ import gnaix.task.Deadline;
 import gnaix.task.Event;
 import gnaix.task.Todo;
 
+/**
+ * Parses user input into structured commands.
+ */
 public class Parser {
     private static final DateTimeFormatter INPUT_DATE_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");

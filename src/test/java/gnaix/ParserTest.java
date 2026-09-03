@@ -1,18 +1,19 @@
 package gnaix;
 
-import gnaix.task.Deadline;
-import gnaix.task.Event;
-import gnaix.task.Task;
-import gnaix.task.Todo;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.Test;
+
+import gnaix.task.Deadline;
+import gnaix.task.Event;
+import gnaix.task.Task;
+import gnaix.task.Todo;
 
 class ParserTest {
 

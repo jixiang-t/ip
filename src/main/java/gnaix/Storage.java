@@ -1,10 +1,5 @@
 package gnaix;
 
-import gnaix.task.Deadline;
-import gnaix.task.Event;
-import gnaix.task.Task;
-import gnaix.task.Todo;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,6 +9,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import gnaix.task.Deadline;
+import gnaix.task.Event;
+import gnaix.task.Task;
+import gnaix.task.Todo;
 
 /**
  * Represents persistent storage for Gnaix tasks.

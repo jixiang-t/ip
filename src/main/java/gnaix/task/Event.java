@@ -8,10 +8,10 @@ import java.time.format.DateTimeFormatter;
  * Represents a task that occurs over a specified time period.
  */
 public class Event extends Task {
-    private LocalDateTime from;
-    private LocalDateTime to;
     private static final DateTimeFormatter OUTPUT_DATE_TIME_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm");
+    private LocalDateTime from;
+    private LocalDateTime to;
 
     /**
      * Creates an event with the given description and time period.

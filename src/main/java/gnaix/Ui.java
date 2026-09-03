@@ -1,9 +1,9 @@
 package gnaix;
 
+import java.util.Scanner;
+
 import gnaix.task.Task;
 import gnaix.task.TaskList;
-
-import java.util.Scanner;
 
 /**
  * Handles interactions with the user.
@@ -137,5 +137,5 @@ public class Ui {
         System.out.println("Bye. Hope to see you again soon!");
         System.out.println(SEPARATOR);
     }
-    
+
 }
