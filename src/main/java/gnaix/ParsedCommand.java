@@ -1,9 +1,12 @@
 package gnaix;
 
-import gnaix.task.Task;
-
 import java.time.LocalDate;
 
+import gnaix.task.Task;
+
+/**
+ * Represents the result of parsing a user command.
+ */
 public class ParsedCommand {
     private final Command command;
     private final Task task;

@@ -1,12 +1,12 @@
 package gnaix;
 
-import gnaix.task.Task;
-import gnaix.task.TaskList;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import gnaix.task.Task;
+import gnaix.task.TaskList;
 
 /**
  * Runs the Gnaix task management application.

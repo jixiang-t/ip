@@ -7,9 +7,9 @@ import java.time.format.DateTimeFormatter;
  * Represents a task that must be completed by a specific date.
  */
 public class Deadline extends Task {
-    private LocalDate doBy;
     private static final DateTimeFormatter OUTPUT_DATE_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
+    private LocalDate doBy;
 
     /**
      * Creates a deadline task with the given description and due date.
