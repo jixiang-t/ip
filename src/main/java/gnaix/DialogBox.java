@@ -1,16 +1,21 @@
 package gnaix;
 
 import java.io.IOException;
+import java.util.Collections;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 /**
- * Represents a chat message shown in the Gnaix GUI.
+ * Represents a dialog box in the Gnaix GUI.
  */
 public class DialogBox extends HBox {
 
@@ -22,12 +27,11 @@ public class DialogBox extends HBox {
 
     private DialogBox(String text, Image image) {
         try {
-            FXMLLoader loader =
+            FXMLLoader fxmlLoader =
                     new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
-
-            loader.setController(this);
-            loader.setRoot(this);
-            loader.load();
+            fxmlLoader.setController(this);
+            fxmlLoader.setRoot(this);
+            fxmlLoader.load();
         } catch (IOException e) {
             throw new RuntimeException("Failed to load dialog box.", e);
         }
@@ -37,26 +41,38 @@ public class DialogBox extends HBox {
     }
 
     /**
-     * Creates a dialog box for user input.
+     * Flips the dialog box to display Gnaix's replies on the left.
+     */
+    private void flip() {
+        ObservableList<Node> children =
+                FXCollections.observableArrayList(getChildren());
+        Collections.reverse(children);
+        getChildren().setAll(children);
+        setAlignment(Pos.TOP_LEFT);
+        dialog.getStyleClass().add("reply-label");
+    }
+
+    /**
+     * Creates a dialog box containing user input.
      *
-     * @param text text to display
-     * @param image user image
-     * @return dialog box
+     * @param text User input.
+     * @param image User profile image.
+     * @return User dialog box.
      */
     public static DialogBox getUserDialog(String text, Image image) {
         return new DialogBox(text, image);
     }
 
     /**
-     * Creates a dialog box for Gnaix's reply.
+     * Creates a dialog box containing Gnaix's response.
      *
-     * @param text text to display
-     * @param image Gnaix image
-     * @return dialog box
+     * @param text Gnaix response.
+     * @param image Gnaix profile image.
+     * @return Gnaix dialog box.
      */
     public static DialogBox getGnaixDialog(String text, Image image) {
         DialogBox dialogBox = new DialogBox(text, image);
-        dialogBox.setAlignment(javafx.geometry.Pos.TOP_LEFT);
+        dialogBox.flip();
         return dialogBox;
     }
 }
