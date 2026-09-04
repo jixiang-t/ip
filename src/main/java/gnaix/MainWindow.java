@@ -93,5 +93,9 @@ public class MainWindow extends AnchorPane {
         );
 
         userInput.clear();
+
+        if (input.equalsIgnoreCase("bye")) {
+            sendButton.getScene().getWindow().hide();
+        }
     }
 }
