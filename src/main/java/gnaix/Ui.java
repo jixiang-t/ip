@@ -79,9 +79,10 @@ public class Ui {
      * @param taskCount Number of tasks after the addition.
      */
     public void showTaskAdded(Task task, int taskCount) {
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
+        showMessages(
+                "Got it. I've added this task:",
+                "  " + task,
+                "Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -90,8 +91,9 @@ public class Ui {
      * @param task Task that was marked as complete.
      */
     public void showTaskCompleted(Task task) {
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + task);
+        showMessages(
+                "Nice! I've marked this task as done:",
+                "  " + task);
     }
 
     /**
@@ -100,8 +102,9 @@ public class Ui {
      * @param task Task that was marked as incomplete.
      */
     public void showTaskUncompleted(Task task) {
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + task);
+        showMessages(
+                "OK, I've marked this task as not done yet:",
+                "  " + task);
     }
 
     /**
@@ -111,9 +114,10 @@ public class Ui {
      * @param taskCount Number of tasks remaining after the deletion.
      */
     public void showTaskDeleted(Task task, int taskCount) {
-        System.out.println("Noted. I've removed this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
+        showMessages(
+                "Noted. I've removed this task:",
+                "  " + task,
+                "Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -136,6 +140,17 @@ public class Ui {
         System.out.println(SEPARATOR);
         System.out.println("Bye. Hope to see you again soon!");
         System.out.println(SEPARATOR);
+    }
+
+    /**
+     * Prints each of the given messages on a separate line.
+     *
+     * @param messages Messages to print.
+     */
+    private void showMessages(String... messages) {
+        for (String message : messages) {
+            System.out.println(message);
+        }
     }
 
 }
