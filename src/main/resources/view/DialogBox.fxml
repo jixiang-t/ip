@@ -10,6 +10,7 @@
          maxWidth="1.7976931348623157E308"
          prefWidth="400.0"
          spacing="5.0"
+         stylesheets="@../css/dialog-box.css"
          type="javafx.scene.layout.HBox"
          xmlns="http://javafx.com/javafx/17"
          xmlns:fx="http://javafx.com/fxml/1">
@@ -29,8 +30,8 @@
         </Label>
 
         <ImageView fx:id="displayPicture"
-                   fitHeight="50.0"
-                   fitWidth="50.0"
+                   fitHeight="44.0"
+                   fitWidth="44.0"
                    pickOnBounds="true"
                    preserveRatio="true" />
     </children>

@@ -1,0 +1,71 @@
+.root {
+    -fx-background-image: url("../images/background.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+
+/* Header */
+
+.header {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.header-banner {
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+/* Conversation */
+
+.scroll-pane,
+.scroll-pane .viewport,
+#dialogContainer {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Input */
+.input-area {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-border-color: rgba(255, 255, 255, 0.2) transparent transparent transparent;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused {
+    -fx-border-color: #4f46e5;
+}
+
+/* Send button */
+
+.button {
+    -fx-background-color: #4f46e5;
+    -fx-background-radius: 8px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #4338ca;
+}
+
+.button:pressed {
+    -fx-background-color: #3730a3;
+}
