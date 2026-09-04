@@ -35,6 +35,8 @@ public class GnaixApplication extends Application {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Gnaix");
+            stage.setMinWidth(450);
+            stage.setMinHeight(600);
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException("Failed to load Gnaix GUI.", e);

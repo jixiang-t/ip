@@ -72,6 +72,7 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getGnaixDialog(
                         "Hello! I'm Gnaix\nWhat can I do for you?",
                         gnaixImage));
+        userInput.requestFocus();
     }
 
     /**
