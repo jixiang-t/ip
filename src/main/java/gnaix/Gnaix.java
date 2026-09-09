@@ -75,126 +75,39 @@ public class Gnaix {
     }
 
     /**
-     * Executes a parsed command.
+     * Executes a parsed command for the text-based interface.
      *
      * @param parsed Parsed command to execute.
      */
     private void executeCommand(ParsedCommand parsed) {
         switch (parsed.getCommand()) {
             case LIST:
-                ui.showTasks(tasks);
+                ui.showMessage(getTaskListResponse());
                 break;
             case TODO:
             case DEADLINE:
             case EVENT:
-                addTask(parsed.getTask());
+                ui.showMessage(addTaskAndGetResponse(parsed.getTask()));
                 break;
             case MARK:
-                markTask(parsed.getIndex());
+                ui.showMessage(markTaskAndGetResponse(parsed.getIndex()));
                 break;
             case UNMARK:
-                unmarkTask(parsed.getIndex());
+                ui.showMessage(unmarkTaskAndGetResponse(parsed.getIndex()));
                 break;
             case DELETE:
-                deleteTask(parsed.getIndex());
+                ui.showMessage(deleteTaskAndGetResponse(parsed.getIndex()));
                 break;
             case DATE:
-                listTasksOnDate(parsed.getDate());
+                ui.showMessage(getDateResponse(parsed.getDate()));
                 break;
             case FIND:
-                findTasks(parsed.getKeyword());
+                ui.showMessage(getFindResponse(parsed.getKeyword()));
                 break;
             case BYE:
             default:
                 break;
         }
-    }
-
-    /**
-     * Adds a task to the task list and saves the updated list.
-     *
-     * @param task Task to add.
-     */
-    private void addTask(Task task) {
-        tasks.add(task);
-        ui.showTaskAdded(task, tasks.size());
-        save();
-    }
-
-    /**
-     * Marks the specified task as complete.
-     *
-     * @param index One-based task number entered by the user.
-     */
-    private void markTask(int index) {
-        if (!isInRange(index)) {
-            ui.showError("That task number does not exist! :(");
-            return;
-        }
-        tasks.mark(index - 1);
-        ui.showTaskCompleted(tasks.get(index - 1));
-        save();
-    }
-
-    /**
-     * Marks the specified task as incomplete.
-     *
-     * @param index One-based task number entered by the user.
-     */
-    private void unmarkTask(int index) {
-        if (!isInRange(index)) {
-            ui.showError("That task number does not exist! :(");
-            return;
-        }
-        tasks.unmark(index - 1);
-        ui.showTaskUncompleted(tasks.get(index - 1));
-        save();
-    }
-
-    /**
-     * Deletes the specified task from the task list.
-     *
-     * @param index One-based task number entered by the user.
-     */
-    private void deleteTask(int index) {
-        if (!isInRange(index)) {
-            ui.showError("That task number does not exist! :(");
-            return;
-        }
-        Task deleted = tasks.delete(index - 1);
-        ui.showTaskDeleted(deleted, tasks.size());
-        save();
-    }
-
-    /**
-     * Displays tasks occurring on the specified date.
-     *
-     * @param date Date for which tasks should be displayed.
-     */
-    private void listTasksOnDate(LocalDate date) {
-        ui.showMessage("Tasks occurring on " + date.format(OUTPUT_DATE_FORMAT) + ":");
-
-        boolean found = false;
-        for (Task task : tasks) {
-            if (task.occursOn(date)) {
-                ui.showMessage(task.toString());
-                found = true;
-            }
-        }
-
-        if (!found) {
-            ui.showMessage("No deadlines or events found on that date.");
-        }
-    }
-
-    /**
-     * Returns whether a one-based task index refers to an existing task.
-     *
-     * @param index One-based task number.
-     * @return True if the index is within the current task list.
-     */
-    private boolean isInRange(int index) {
-        return index >= 1 && index <= tasks.size();
     }
 
     /**
@@ -209,27 +122,13 @@ public class Gnaix {
     }
 
     /**
-     * Displays tasks whose descriptions contain the specified keyword.
+     * Returns whether a one-based task index refers to an existing task.
      *
-     * @param keyword Keyword to search for.
+     * @param index One-based task number.
+     * @return True if the index is within the current task list.
      */
-    private void findTasks(String keyword) {
-        ui.showMessage("Here are the matching tasks in your list:");
-
-        boolean found = false;
-
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-
-            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
-                ui.showMessage((i + 1) + ". " + task);
-                found = true;
-            }
-        }
-
-        if (!found) {
-            ui.showMessage("No matching tasks found :(");
-        }
+    private boolean isInRange(int index) {
+        return index >= 1 && index <= tasks.size();
     }
 
     /**
@@ -275,7 +174,8 @@ public class Gnaix {
      * @return Formatted task list.
      */
     private String getTaskListResponse() {
-        StringBuilder response = new StringBuilder("Here are the tasks in your list:");
+        StringBuilder response =
+                new StringBuilder("Here are the tasks in your list:");
 
         for (int i = 0; i < tasks.size(); i++) {
             response.append(System.lineSeparator())
@@ -406,8 +306,11 @@ public class Gnaix {
      * @return Formatted tasks occurring on the date.
      */
     private String getDateResponse(LocalDate date) {
-        StringBuilder response = new StringBuilder(
-                "Tasks occurring on " + date.format(OUTPUT_DATE_FORMAT) + ":");
+        StringBuilder response =
+                new StringBuilder(
+                        "Tasks occurring on "
+                                + date.format(OUTPUT_DATE_FORMAT)
+                                + ":");
 
         boolean found = false;
 
