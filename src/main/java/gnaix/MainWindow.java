@@ -80,6 +80,8 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        assert gnaix != null : "Gnaix must be initialised before handling input";
+
         String input = userInput.getText().trim();
 
         if (input.isEmpty()) {
