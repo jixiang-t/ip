@@ -1,7 +1,9 @@
 package gnaix.task;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents and manages the list of tasks.
@@ -82,12 +84,12 @@ public class TaskList implements Iterable<Task> {
     }
 
     /**
-     * Returns the underlying list of tasks.
+     * Returns a read-only view of the tasks.
      *
-     * @return List containing the tasks.
+     * @return Unmodifiable list containing the tasks.
      */
-    public ArrayList<Task> getTasks() {
-        return tasks;
+    public List<Task> getTasks() {
+        return Collections.unmodifiableList(tasks);
     }
 
     /**
