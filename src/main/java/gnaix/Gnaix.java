@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import gnaix.task.Task;
 import gnaix.task.TaskList;
@@ -259,23 +261,22 @@ public class Gnaix {
         StringBuilder response =
                 new StringBuilder("Here are the matching tasks in your list:");
 
-        boolean found = false;
+        String normalisedKeyword = keyword.toLowerCase();
 
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
+        List<Integer> matchingIndices = IntStream.range(0, tasks.size())
+                .filter(i -> tasks.get(i).getDescription()
+                        .toLowerCase()
+                        .contains(normalisedKeyword))
+                .boxed()
+                .toList();
 
-            if (task.getDescription().toLowerCase()
-                    .contains(keyword.toLowerCase())) {
+        matchingIndices.forEach(index ->
                 response.append(System.lineSeparator())
-                        .append(i + 1)
+                        .append(index + 1)
                         .append(". ")
-                        .append(task);
+                        .append(tasks.get(index)));
 
-                found = true;
-            }
-        }
-
-        if (!found) {
+        if (matchingIndices.isEmpty()) {
             response.append(System.lineSeparator())
                     .append("No matching tasks found :(");
         }
@@ -296,18 +297,15 @@ public class Gnaix {
                                 + date.format(OUTPUT_DATE_FORMAT)
                                 + ":");
 
-        boolean found = false;
+        List<Task> matchingTasks = tasks.getTasks().stream()
+                .filter(task -> task.occursOn(date))
+                .toList();
 
-        for (Task task : tasks) {
-            if (task.occursOn(date)) {
+        matchingTasks.forEach(task ->
                 response.append(System.lineSeparator())
-                        .append(task);
+                        .append(task));
 
-                found = true;
-            }
-        }
-
-        if (!found) {
+        if (matchingTasks.isEmpty()) {
             response.append(System.lineSeparator())
                     .append("No deadlines or events found on that date.");
         }
