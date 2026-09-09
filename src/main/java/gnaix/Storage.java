@@ -19,6 +19,10 @@ import gnaix.task.Todo;
  * Represents persistent storage for Gnaix tasks.
  */
 public class Storage {
+    private static final int TODO_FIELD_COUNT = 3;
+    private static final int DEADLINE_FIELD_COUNT = 4;
+    private static final int EVENT_FIELD_COUNT = 5;
+
     private final Path filePath;
 
     /**
@@ -95,55 +99,123 @@ public class Storage {
      * @throws IllegalArgumentException If the record has an invalid format.
      */
     private Task parseTask(String line) {
-        String[] parts = line.split("\\|", -1);
-        for (int i = 0; i < parts.length; i++) {
-            parts[i] = parts[i].trim();
+        String[] fields = parseFields(line);
+        boolean isCompleted = parseCompletionStatus(fields);
+        Task task = createTask(fields);
+
+        if (isCompleted) {
+            task.markAsComplete();
         }
 
-        if (parts.length < 3) {
+        return task;
+    }
+
+    /**
+     * Splits and normalizes the fields in a stored task record.
+     *
+     * @param line Stored task record.
+     * @return Normalized fields in the record.
+     * @throws IllegalArgumentException If the record has too few fields.
+     */
+    private String[] parseFields(String line) {
+        String[] fields = line.split("\\|", -1);
+
+        for (int i = 0; i < fields.length; i++) {
+            fields[i] = fields[i].trim();
+        }
+
+        if (fields.length < TODO_FIELD_COUNT) {
             throw new IllegalArgumentException("Invalid task format :(");
         }
 
-        String type = parts[0];
-        if (!parts[1].equals("0") && !parts[1].equals("1")) {
+        return fields;
+    }
+
+    /**
+     * Parses the completion status from a stored task record.
+     *
+     * @param fields Fields in the stored task record.
+     * @return True if the stored task is completed.
+     * @throws IllegalArgumentException If the completion status is invalid.
+     */
+    private boolean parseCompletionStatus(String[] fields) {
+        String completionStatus = fields[1];
+
+        if (!completionStatus.equals("0") && !completionStatus.equals("1")) {
             throw new IllegalArgumentException("Invalid completion status :(");
         }
-        boolean completed = parts[1].equals("1");
-        Task task;
 
-        switch (type) {
+        return completionStatus.equals("1");
+    }
+
+    /**
+     * Creates a task from the fields in a stored task record.
+     *
+     * @param fields Fields in the stored task record.
+     * @return Task represented by the fields.
+     * @throws IllegalArgumentException If the task type or field count is invalid.
+     */
+    private Task createTask(String[] fields) {
+        String taskType = fields[0];
+
+        switch (taskType) {
             case "T":
-                if (parts.length != 3) {
-                    throw new IllegalArgumentException("Invalid Todo format");
-                }
-                task = new Todo(parts[2]);
-                break;
-
+                return createTodo(fields);
             case "D":
-                if (parts.length != 4) {
-                    throw new IllegalArgumentException("Invalid Deadline format");
-                }
-                task = new Deadline(parts[2], LocalDate.parse(parts[3]));
-                break;
-
+                return createDeadline(fields);
             case "E":
-                if (parts.length != 5) {
-                    throw new IllegalArgumentException("Invalid Event format");
-                }
-                task = new Event(
-                        parts[2],
-                        LocalDateTime.parse(parts[3]),
-                        LocalDateTime.parse(parts[4]));
-                break;
-
+                return createEvent(fields);
             default:
-                throw new IllegalArgumentException("Unknown task type: " + type);
+                throw new IllegalArgumentException("Unknown task type: " + taskType);
+        }
+    }
+
+    /**
+     * Creates a todo from a stored task record.
+     *
+     * @param fields Fields in the stored task record.
+     * @return Todo represented by the fields.
+     * @throws IllegalArgumentException If the field count is invalid.
+     */
+    private Todo createTodo(String[] fields) {
+        if (fields.length != TODO_FIELD_COUNT) {
+            throw new IllegalArgumentException("Invalid Todo format");
         }
 
-        if (completed) {
-            task.markAsComplete();
+        return new Todo(fields[2]);
+    }
+
+    /**
+     * Creates a deadline from a stored task record.
+     *
+     * @param fields Fields in the stored task record.
+     * @return Deadline represented by the fields.
+     * @throws IllegalArgumentException If the field count is invalid.
+     */
+    private Deadline createDeadline(String[] fields) {
+        if (fields.length != DEADLINE_FIELD_COUNT) {
+            throw new IllegalArgumentException("Invalid Deadline format");
         }
-        return task;
+
+        return new Deadline(fields[2], LocalDate.parse(fields[3]));
+    }
+
+    /**
+     * Creates an event from a stored task record.
+     *
+     * @param fields Fields in the stored task record.
+     * @return Event represented by the fields.
+     * @throws IllegalArgumentException If the field count is invalid.
+     */
+    private Event createEvent(String[] fields) {
+        if (fields.length != EVENT_FIELD_COUNT) {
+            throw new IllegalArgumentException("Invalid Event format");
+        }
+
+        return new Event(
+                fields[2],
+                LocalDateTime.parse(fields[3]),
+                LocalDateTime.parse(fields[4]));
     }
 
     /**
