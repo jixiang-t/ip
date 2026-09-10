@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -231,5 +232,155 @@ class ParserTest {
         assertEquals(
                 "Please provide a keyword to search for! :(",
                 result.getError());
+    }
+
+    @Test
+    void parseTodo_singleTag_tagExtracted() {
+        ParsedCommand result =
+                Parser.parse("todo study CS2103T #school");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.TODO, result.getCommand());
+        assertEquals(
+                "study CS2103T",
+                result.getTask().getDescription());
+        assertEquals(Set.of("school"), result.getTask().getTags());
+    }
+
+    @Test
+    void parseTodo_multipleTags_tagsExtracted() {
+        ParsedCommand result =
+                Parser.parse("todo study CS2103T #school #urgent");
+
+        assertFalse(result.hasError());
+        assertEquals(
+                "study CS2103T",
+                result.getTask().getDescription());
+        assertEquals(
+                Set.of("school", "urgent"),
+                result.getTask().getTags());
+    }
+
+    @Test
+    void parseTodo_duplicateTags_storedOnce() {
+        ParsedCommand result =
+                Parser.parse("todo study CS2103T #school #School");
+
+        assertFalse(result.hasError());
+        assertEquals(1, result.getTask().getTags().size());
+        assertEquals(
+                Set.of("school"),
+                result.getTask().getTags());
+    }
+
+    @Test
+    void parseTodo_cSharpDescription_hashPreserved() {
+        ParsedCommand result =
+                Parser.parse("todo learn C# #programming");
+
+        assertFalse(result.hasError());
+        assertEquals(
+                "learn C#",
+                result.getTask().getDescription());
+        assertEquals(
+                Set.of("programming"),
+                result.getTask().getTags());
+    }
+
+    @Test
+    void parseDeadline_tagsAfterDate_tagsExtracted() {
+        ParsedCommand result =
+                Parser.parse(
+                        "deadline submit quiz /by 2026-09-10 #school #urgent");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.DEADLINE, result.getCommand());
+        assertEquals(
+                "submit quiz",
+                result.getTask().getDescription());
+        assertEquals(
+                Set.of("school", "urgent"),
+                result.getTask().getTags());
+    }
+
+    @Test
+    void parseEvent_tagsAfterEndTime_tagsExtracted() {
+        ParsedCommand result =
+                Parser.parse(
+                        "event meeting /from 2026-09-15 1000 "
+                                + "/to 2026-09-15 1100 #school");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.EVENT, result.getCommand());
+        assertEquals(
+                "meeting",
+                result.getTask().getDescription());
+        assertEquals(
+                Set.of("school"),
+                result.getTask().getTags());
+    }
+
+    @Test
+    void parseTag_singleTag_tagsReturned() {
+        ParsedCommand result = Parser.parse("tag #school");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.TAG, result.getCommand());
+        assertEquals(Set.of("school"), result.getTags());
+    }
+
+    @Test
+    void parseTag_multipleTags_allTagsReturned() {
+        ParsedCommand result =
+                Parser.parse("tag #school #urgent");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.TAG, result.getCommand());
+        assertEquals(
+                Set.of("school", "urgent"),
+                result.getTags());
+    }
+
+    @Test
+    void parseTag_mixedCaseTags_normalised() {
+        ParsedCommand result =
+                Parser.parse("tag #School #URGENT");
+
+        assertFalse(result.hasError());
+        assertEquals(
+                Set.of("school", "urgent"),
+                result.getTags());
+    }
+
+    @Test
+    void parseTag_duplicateTags_storedOnce() {
+        ParsedCommand result =
+                Parser.parse("tag #school #School");
+
+        assertFalse(result.hasError());
+        assertEquals(
+                Set.of("school"),
+                result.getTags());
+    }
+
+    @Test
+    void parseTag_missingHash_errorReturned() {
+        ParsedCommand result = Parser.parse("tag school");
+
+        assertTrue(result.hasError());
+    }
+
+    @Test
+    void parseTag_hashOnly_errorReturned() {
+        ParsedCommand result = Parser.parse("tag #");
+
+        assertTrue(result.hasError());
+    }
+
+    @Test
+    void parseTag_missingTag_errorReturned() {
+        ParsedCommand result = Parser.parse("tag");
+
+        assertTrue(result.hasError());
     }
 }

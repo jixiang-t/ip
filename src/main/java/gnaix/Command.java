@@ -14,6 +14,7 @@ public enum Command {
     EVENT,
     DATE,
     FIND,
+    TAG,
     UNKNOWN;
 
     /**
