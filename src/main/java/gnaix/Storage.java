@@ -23,6 +23,10 @@ public class Storage {
     private static final int DEADLINE_FIELD_COUNT = 4;
     private static final int EVENT_FIELD_COUNT = 5;
 
+    private static final int TODO_TAGGED_FIELD_COUNT = 4;
+    private static final int DEADLINE_TAGGED_FIELD_COUNT = 5;
+    private static final int EVENT_TAGGED_FIELD_COUNT = 6;
+
     private final Path filePath;
 
     /**
@@ -103,6 +107,8 @@ public class Storage {
         boolean isCompleted = parseCompletionStatus(fields);
         Task task = createTask(fields);
 
+        restoreTags(task, fields);
+
         if (isCompleted) {
             task.markAsComplete();
         }
@@ -178,7 +184,8 @@ public class Storage {
      * @throws IllegalArgumentException If the field count is invalid.
      */
     private Todo createTodo(String[] fields) {
-        if (fields.length != TODO_FIELD_COUNT) {
+        if (fields.length != TODO_FIELD_COUNT
+                && fields.length != TODO_TAGGED_FIELD_COUNT) {
             throw new IllegalArgumentException("Invalid Todo format");
         }
 
@@ -193,7 +200,8 @@ public class Storage {
      * @throws IllegalArgumentException If the field count is invalid.
      */
     private Deadline createDeadline(String[] fields) {
-        if (fields.length != DEADLINE_FIELD_COUNT) {
+        if (fields.length != DEADLINE_FIELD_COUNT
+                && fields.length != DEADLINE_TAGGED_FIELD_COUNT) {
             throw new IllegalArgumentException("Invalid Deadline format");
         }
 
@@ -208,7 +216,8 @@ public class Storage {
      * @throws IllegalArgumentException If the field count is invalid.
      */
     private Event createEvent(String[] fields) {
-        if (fields.length != EVENT_FIELD_COUNT) {
+        if (fields.length != EVENT_FIELD_COUNT
+                && fields.length != EVENT_TAGGED_FIELD_COUNT) {
             throw new IllegalArgumentException("Invalid Event format");
         }
 
@@ -216,6 +225,46 @@ public class Storage {
                 fields[2],
                 LocalDateTime.parse(fields[3]),
                 LocalDateTime.parse(fields[4]));
+    }
+
+    /**
+     * Restores tags from a stored task record.
+     *
+     * @param task Task receiving the stored tags.
+     * @param fields Fields in the stored task record.
+     */
+    private void restoreTags(Task task, String[] fields) {
+        int tagFieldIndex = getTagFieldIndex(fields[0]);
+
+        if (fields.length <= tagFieldIndex || fields[tagFieldIndex].isEmpty()) {
+            return;
+        }
+
+        String[] tags = fields[tagFieldIndex].split(",");
+
+        for (String tag : tags) {
+            task.addTag(tag.trim());
+        }
+    }
+
+    /**
+     * Returns the position of the optional tag field for a task type.
+     *
+     * @param taskType Stored task type.
+     * @return Index of the optional tag field.
+     * @throws IllegalArgumentException If the task type is unsupported.
+     */
+    private int getTagFieldIndex(String taskType) {
+        switch (taskType) {
+            case "T":
+                return TODO_FIELD_COUNT;
+            case "D":
+                return DEADLINE_FIELD_COUNT;
+            case "E":
+                return EVENT_FIELD_COUNT;
+            default:
+                throw new IllegalArgumentException("Unknown task type: " + taskType);
+        }
     }
 
     /**
@@ -227,22 +276,26 @@ public class Storage {
      */
     private String taskToString(Task task) {
         int completed = task.isCompleted() ? 1 : 0;
+        String tagField = String.join(",", task.getTags());
 
         if (task instanceof Todo) {
-            return "T | " + completed + " | " + task.getDescription();
+            return "T | " + completed + " | "
+                    + task.getDescription() + " | " + tagField;
         }
 
         if (task instanceof Deadline) {
             Deadline deadline = (Deadline) task;
             return "D | " + completed + " | "
-                    + task.getDescription() + " | " + deadline.getDoBy();
+                    + task.getDescription() + " | "
+                    + deadline.getDoBy() + " | " + tagField;
         }
 
         if (task instanceof Event) {
             Event event = (Event) task;
             return "E | " + completed + " | "
                     + task.getDescription() + " | "
-                    + event.getFrom() + " | " + event.getTo();
+                    + event.getFrom() + " | "
+                    + event.getTo() + " | " + tagField;
         }
 
         throw new IllegalArgumentException("Unknown task type");
