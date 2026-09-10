@@ -5,10 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -121,5 +124,149 @@ class StorageTest {
 
         assertEquals(1, loadedTasks.size());
         assertTrue(loadedTasks.get(0).isCompleted());
+    }
+
+    @Test
+    void saveAndLoad_taggedTodo_tagsPreserved(@TempDir Path tempDir)
+            throws Exception {
+        Path filePath = tempDir.resolve("tasks.txt");
+        Storage storage = new Storage(filePath);
+
+        Todo todo = new Todo("study CS2103T");
+        todo.addTag("school");
+        todo.addTag("urgent");
+
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(todo);
+
+        storage.save(tasks);
+        ArrayList<Task> loadedTasks = storage.load();
+
+        assertEquals(1, loadedTasks.size());
+        assertEquals(
+                Set.of("school", "urgent"),
+                loadedTasks.get(0).getTags());
+    }
+
+    @Test
+    void saveAndLoad_taggedDeadline_tagsPreserved(@TempDir Path tempDir)
+            throws Exception {
+        Path filePath = tempDir.resolve("tasks.txt");
+        Storage storage = new Storage(filePath);
+
+        Deadline deadline = new Deadline(
+                "submit quiz",
+                LocalDate.of(2026, 9, 10));
+        deadline.addTag("school");
+        deadline.addTag("urgent");
+
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(deadline);
+
+        storage.save(tasks);
+        ArrayList<Task> loadedTasks = storage.load();
+
+        Deadline loadedDeadline = assertInstanceOf(
+                Deadline.class,
+                loadedTasks.get(0));
+
+        assertEquals(
+                Set.of("school", "urgent"),
+                loadedDeadline.getTags());
+        assertEquals(
+                LocalDate.of(2026, 9, 10),
+                loadedDeadline.getDoBy());
+    }
+
+    @Test
+    void saveAndLoad_taggedEvent_tagsPreserved(@TempDir Path tempDir)
+            throws Exception {
+        Path filePath = tempDir.resolve("tasks.txt");
+        Storage storage = new Storage(filePath);
+
+        Event event = new Event(
+                "team meeting",
+                LocalDateTime.of(2026, 9, 15, 10, 0),
+                LocalDateTime.of(2026, 9, 15, 11, 0));
+        event.addTag("school");
+
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(event);
+
+        storage.save(tasks);
+        ArrayList<Task> loadedTasks = storage.load();
+
+        Event loadedEvent = assertInstanceOf(
+                Event.class,
+                loadedTasks.get(0));
+
+        assertEquals(Set.of("school"), loadedEvent.getTags());
+        assertEquals(
+                LocalDateTime.of(2026, 9, 15, 10, 0),
+                loadedEvent.getFrom());
+        assertEquals(
+                LocalDateTime.of(2026, 9, 15, 11, 0),
+                loadedEvent.getTo());
+    }
+
+    @Test
+    void load_oldUntaggedRecords_tasksPreserved(@TempDir Path tempDir)
+            throws Exception {
+        Path filePath = tempDir.resolve("tasks.txt");
+
+        Files.writeString(
+                filePath,
+                "T | 0 | buy milk" + System.lineSeparator()
+                        + "D | 1 | submit assignment | 2026-09-10"
+                        + System.lineSeparator()
+                        + "E | 0 | meeting | 2026-09-15T10:00 "
+                        + "| 2026-09-15T11:00"
+                        + System.lineSeparator(),
+                StandardCharsets.UTF_8);
+
+        Storage storage = new Storage(filePath);
+        ArrayList<Task> loadedTasks = storage.load();
+
+        assertEquals(3, loadedTasks.size());
+
+        assertInstanceOf(Todo.class, loadedTasks.get(0));
+        assertEquals("buy milk", loadedTasks.get(0).getDescription());
+        assertTrue(loadedTasks.get(0).getTags().isEmpty());
+
+        Deadline deadline = assertInstanceOf(
+                Deadline.class,
+                loadedTasks.get(1));
+        assertEquals("submit assignment", deadline.getDescription());
+        assertTrue(deadline.isCompleted());
+        assertTrue(deadline.getTags().isEmpty());
+
+        Event event = assertInstanceOf(
+                Event.class,
+                loadedTasks.get(2));
+        assertEquals("meeting", event.getDescription());
+        assertTrue(event.getTags().isEmpty());
+    }
+
+    @Test
+    void save_taggedTask_tagFieldWritten(@TempDir Path tempDir)
+            throws Exception {
+        Path filePath = tempDir.resolve("tasks.txt");
+        Storage storage = new Storage(filePath);
+
+        Todo todo = new Todo("study CS2103T");
+        todo.addTag("school");
+        todo.addTag("urgent");
+
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(todo);
+
+        storage.save(tasks);
+
+        String stored = Files.readString(
+                filePath,
+                StandardCharsets.UTF_8);
+
+        assertTrue(stored.contains(
+                "T | 0 | study CS2103T | school,urgent"));
     }
 }
