@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 import gnaix.task.Task;
@@ -108,6 +109,10 @@ public class Gnaix {
                 assert parsed.getKeyword() != null
                         : "Find command should contain a parsed keyword";
                 return getFindResponse(parsed.getKeyword());
+            case TAG:
+                assert !parsed.getTags().isEmpty()
+                        : "Tag command should contain at least one tag";
+                return getTagResponse(parsed.getTags());
             default:
                 assert false : "Unexpected command after parsing";
                 return "That's not a valid command! :(";
@@ -279,6 +284,35 @@ public class Gnaix {
         if (matchingIndices.isEmpty()) {
             response.append(System.lineSeparator())
                     .append("No matching tasks found :(");
+        }
+
+        return response.toString();
+    }
+
+    /**
+     * Returns tasks containing all of the specified tags.
+     *
+     * @param tags Tags that matching tasks must contain.
+     * @return Formatted matching tasks.
+     */
+    private String getTagResponse(Set<String> tags) {
+        StringBuilder response =
+                new StringBuilder("Here are the tasks with the specified tags:");
+
+        List<Integer> matchingIndices = IntStream.range(0, tasks.size())
+                .filter(i -> tasks.get(i).getTags().containsAll(tags))
+                .boxed()
+                .toList();
+
+        matchingIndices.forEach(index ->
+                response.append(System.lineSeparator())
+                        .append(index + 1)
+                        .append(". ")
+                        .append(tasks.get(index)));
+
+        if (matchingIndices.isEmpty()) {
+            response.append(System.lineSeparator())
+                    .append("No tasks found with the specified tags :(");
         }
 
         return response.toString();
