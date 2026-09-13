@@ -19,6 +19,8 @@ import javafx.scene.layout.VBox;
  * Represents a dialog box in the Gnaix GUI.
  */
 public class DialogBox extends HBox {
+    private static final double USER_BUBBLE_MAX_WIDTH = 260.0;
+    private static final double GNAIX_BUBBLE_MAX_WIDTH = 360.0;
 
     @FXML
     private Label dialog;
@@ -42,6 +44,8 @@ public class DialogBox extends HBox {
 
         dialog.setText(text);
         displayPicture.setImage(image);
+        getStyleClass().add("user-dialog");
+        contentContainer.setMaxWidth(USER_BUBBLE_MAX_WIDTH);
     }
 
     /**
@@ -53,6 +57,9 @@ public class DialogBox extends HBox {
         Collections.reverse(children);
         getChildren().setAll(children);
         setAlignment(Pos.TOP_LEFT);
+        getStyleClass().remove("user-dialog");
+        getStyleClass().add("gnaix-dialog");
+        contentContainer.setMaxWidth(GNAIX_BUBBLE_MAX_WIDTH);
         contentContainer.getStyleClass().add("reply-bubble");
     }
 

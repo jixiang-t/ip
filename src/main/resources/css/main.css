@@ -28,6 +28,11 @@
     -fx-background-color: transparent;
 }
 
+#dialogContainer {
+    -fx-fill-width: true;
+    -fx-spacing: 2px;
+}
+
 .scroll-pane .viewport {
     -fx-background-color: rgba(255, 255, 255, 0.5);
 }

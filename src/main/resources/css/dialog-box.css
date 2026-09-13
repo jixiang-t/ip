@@ -1,11 +1,20 @@
+.user-dialog {
+    -fx-alignment: top-right;
+}
+
+.gnaix-dialog {
+    -fx-alignment: top-left;
+}
+
 .dialog-bubble {
-    -fx-background-color: #dbeafe;
+    -fx-background-color: #e0ecff;
     -fx-background-radius: 16px 16px 4px 16px;
-    -fx-padding: 10px 14px;
+    -fx-padding: 8px 12px;
 }
 
 .dialog-text {
     -fx-font-size: 14px;
+    -fx-line-spacing: 2px;
     -fx-text-fill: #1f2937;
 }
 
@@ -14,6 +23,7 @@
     -fx-background-radius: 16px 16px 16px 4px;
     -fx-border-color: #e5e7eb;
     -fx-border-radius: 16px 16px 16px 4px;
+    -fx-padding: 10px 12px;
 }
 
 .task-response {
