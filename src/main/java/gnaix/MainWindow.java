@@ -88,7 +88,7 @@ public class MainWindow extends AnchorPane {
             return;
         }
 
-        String response = gnaix.getResponse(input);
+        GuiResponse response = gnaix.getGuiResponse(input);
 
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),

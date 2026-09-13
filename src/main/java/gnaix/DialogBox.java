@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * Represents a dialog box in the Gnaix GUI.
@@ -21,6 +22,9 @@ public class DialogBox extends HBox {
 
     @FXML
     private Label dialog;
+
+    @FXML
+    private VBox contentContainer;
 
     @FXML
     private ImageView displayPicture;
@@ -49,7 +53,7 @@ public class DialogBox extends HBox {
         Collections.reverse(children);
         getChildren().setAll(children);
         setAlignment(Pos.TOP_LEFT);
-        dialog.getStyleClass().add("reply-label");
+        contentContainer.getStyleClass().add("reply-bubble");
     }
 
     /**
@@ -74,5 +78,52 @@ public class DialogBox extends HBox {
         DialogBox dialogBox = new DialogBox(text, image);
         dialogBox.flip();
         return dialogBox;
+    }
+
+    /**
+     * Creates a dialog box containing Gnaix's structured GUI response.
+     *
+     * @param response Gnaix response with optional task display data.
+     * @param image Gnaix profile image.
+     * @return Gnaix dialog box.
+     */
+    public static DialogBox getGnaixDialog(GuiResponse response, Image image) {
+        if (!response.hasTasks()) {
+            return getGnaixDialog(response.getText(), image);
+        }
+
+        DialogBox dialogBox = new DialogBox("", image);
+        dialogBox.contentContainer.getChildren().setAll(dialogBox.createResponseContent(response));
+        dialogBox.flip();
+        return dialogBox;
+    }
+
+    /**
+     * Builds the rich task response content for this dialog.
+     *
+     * @param response Response containing task data.
+     * @return Nodes used inside the response bubble.
+     */
+    private VBox createResponseContent(GuiResponse response) {
+        VBox content = new VBox();
+        content.getStyleClass().add("task-response");
+
+        Label heading = new Label(response.getHeading());
+        heading.getStyleClass().add("dialog-text");
+        heading.setWrapText(true);
+        heading.maxWidthProperty().bind(contentContainer.widthProperty());
+        content.getChildren().add(heading);
+
+        response.getTasks().forEach(task -> content.getChildren().add(new TaskCard(task)));
+
+        if (!response.getFooter().isBlank()) {
+            Label footer = new Label(response.getFooter());
+            footer.getStyleClass().add("dialog-text");
+            footer.setWrapText(true);
+            footer.maxWidthProperty().bind(contentContainer.widthProperty());
+            content.getChildren().add(footer);
+        }
+
+        return content;
     }
 }
