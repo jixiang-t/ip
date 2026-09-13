@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class Task {
     private String description;
-    private boolean completed;
+    private boolean isCompleted;
     private final Set<String> tags;
 
     /**
@@ -21,13 +21,13 @@ public class Task {
      */
     public Task(String description) {
         this.description = description;
-        this.completed = false;
+        this.isCompleted = false;
         this.tags = new LinkedHashSet<>();
     }
 
     @Override
     public String toString() {
-        String status = completed ? "[X] " : "[ ] ";
+        String status = isCompleted ? "[X] " : "[ ] ";
 
         if (tags.isEmpty()) {
             return status + this.description;
@@ -53,14 +53,14 @@ public class Task {
      * Marks the task as complete.
      */
     public void markAsComplete() {
-        this.completed = true;
+        this.isCompleted = true;
     }
 
     /**
      * Marks the task as incomplete.
      */
     public void markAsIncomplete() {
-        this.completed = false;
+        this.isCompleted = false;
     }
 
     /**
@@ -69,7 +69,7 @@ public class Task {
      * @return True if the task is complete.
      */
     public boolean isCompleted() {
-        return this.completed;
+        return this.isCompleted;
     }
 
     /**
