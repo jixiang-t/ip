@@ -36,8 +36,14 @@ public class TaskCard extends HBox {
         setAlignment(Pos.TOP_LEFT);
         setMaxWidth(Double.MAX_VALUE);
 
+        VBox identity = new VBox();
+        identity.getStyleClass().add("task-identity");
+
         Label number = new Label(String.valueOf(taskDisplay.getNumber()));
         number.getStyleClass().add("task-number");
+
+        Label type = new Label(getTaskType(task));
+        type.getStyleClass().add("task-type");
 
         Label status = new Label(task.isCompleted() ? "\u2611" : "\u2610");
         status.getStyleClass().add("task-status");
@@ -56,7 +62,8 @@ public class TaskCard extends HBox {
         addMetadata(task, details);
         addTags(task, details);
 
-        getChildren().addAll(number, status, details);
+        identity.getChildren().addAll(number, type);
+        getChildren().addAll(identity, status, details);
     }
 
     /**
@@ -119,6 +126,24 @@ public class TaskCard extends HBox {
         }
 
         return "";
+    }
+
+    /**
+     * Returns the task type initial used beside each task card.
+     *
+     * @param task Task being displayed.
+     * @return T, D, or E depending on the task type.
+     */
+    private String getTaskType(Task task) {
+        if (task instanceof Deadline) {
+            return "D";
+        }
+
+        if (task instanceof Event) {
+            return "E";
+        }
+
+        return "T";
     }
 
     /**

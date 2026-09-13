@@ -50,12 +50,25 @@
     -fx-spacing: 8px;
 }
 
+.task-identity {
+    -fx-alignment: top-center;
+    -fx-min-width: 22px;
+    -fx-spacing: 2px;
+}
+
 .task-number {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-text-fill: #6b7280;
-    -fx-min-width: 22px;
-    -fx-alignment: top-right;
+}
+
+.task-type {
+    -fx-background-color: #e5e7eb;
+    -fx-background-radius: 4px;
+    -fx-padding: 1px 5px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4b5563;
 }
 
 .task-status {
