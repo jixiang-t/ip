@@ -96,13 +96,31 @@ public class DialogBox extends HBox {
      */
     public static DialogBox getGnaixDialog(GuiResponse response, Image image) {
         if (!response.hasTasks()) {
-            return getGnaixDialog(response.getText(), image);
+            DialogBox dialogBox = getGnaixDialog(response.getText(), image);
+            dialogBox.applyErrorStyle(response);
+            return dialogBox;
         }
 
         DialogBox dialogBox = new DialogBox("", image);
         dialogBox.contentContainer.getChildren().setAll(dialogBox.createResponseContent(response));
         dialogBox.flip();
+        dialogBox.applyErrorStyle(response);
         return dialogBox;
+    }
+
+    /**
+     * Applies subtle error styling when a GUI response represents a problem.
+     *
+     * @param response Response to inspect.
+     */
+    private void applyErrorStyle(GuiResponse response) {
+        if (!response.isError()) {
+            return;
+        }
+
+        contentContainer.getStyleClass().add("error-bubble");
+        dialog.getStyleClass().add("error-text");
+        dialog.setText("! " + dialog.getText());
     }
 
     /**

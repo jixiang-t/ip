@@ -11,13 +11,15 @@ public class GuiResponse {
     private final String heading;
     private final List<TaskDisplay> tasks;
     private final String footer;
+    private final boolean isError;
 
     private GuiResponse(String text, String heading,
-                        List<TaskDisplay> tasks, String footer) {
+                        List<TaskDisplay> tasks, String footer, boolean isError) {
         this.text = text;
         this.heading = heading;
         this.tasks = List.copyOf(tasks);
         this.footer = footer;
+        this.isError = isError;
     }
 
     /**
@@ -27,7 +29,17 @@ public class GuiResponse {
      * @return GUI response containing only text.
      */
     public static GuiResponse plain(String text) {
-        return new GuiResponse(text, text, Collections.emptyList(), "");
+        return new GuiResponse(text, text, Collections.emptyList(), "", false);
+    }
+
+    /**
+     * Creates an error response with no structured task content.
+     *
+     * @param text Error text.
+     * @return GUI response marked as an error.
+     */
+    public static GuiResponse error(String text) {
+        return new GuiResponse(text, text, Collections.emptyList(), "", true);
     }
 
     /**
@@ -41,7 +53,7 @@ public class GuiResponse {
      */
     public static GuiResponse withTasks(String text, String heading,
                                         List<TaskDisplay> tasks, String footer) {
-        return new GuiResponse(text, heading, tasks, footer);
+        return new GuiResponse(text, heading, tasks, footer, false);
     }
 
     public String getText() {
@@ -58,6 +70,15 @@ public class GuiResponse {
 
     public String getFooter() {
         return footer;
+    }
+
+    /**
+     * Returns whether this response should use error styling.
+     *
+     * @return True if this response represents an error.
+     */
+    public boolean isError() {
+        return isError;
     }
 
     /**

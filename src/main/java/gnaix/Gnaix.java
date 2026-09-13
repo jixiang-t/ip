@@ -172,7 +172,7 @@ public class Gnaix {
         assert parsed != null : "Parser should always return a command result";
 
         if (parsed.hasError()) {
-            return GuiResponse.plain(parsed.getError());
+            return GuiResponse.error(parsed.getError());
         }
 
         return executeGuiCommand(parsed);
@@ -220,7 +220,7 @@ public class Gnaix {
                 return getTagGuiResponse(parsed.getTags());
             default:
                 assert false : "Unexpected command after parsing";
-                return GuiResponse.plain("That's not a valid command! :(");
+                return GuiResponse.error("That's not a valid command! :(");
         }
     }
 
@@ -315,7 +315,7 @@ public class Gnaix {
      */
     private GuiResponse markTaskAndGetGuiResponse(int index) {
         if (!isInRange(index)) {
-            return GuiResponse.plain("That task number does not exist! :(");
+            return GuiResponse.error("That task number does not exist! :(");
         }
 
         String text = markTaskAndGetResponse(index);
@@ -355,7 +355,7 @@ public class Gnaix {
      */
     private GuiResponse unmarkTaskAndGetGuiResponse(int index) {
         if (!isInRange(index)) {
-            return GuiResponse.plain("That task number does not exist! :(");
+            return GuiResponse.error("That task number does not exist! :(");
         }
 
         String text = unmarkTaskAndGetResponse(index);
@@ -396,7 +396,7 @@ public class Gnaix {
      */
     private GuiResponse deleteTaskAndGetGuiResponse(int index) {
         if (!isInRange(index)) {
-            return GuiResponse.plain("That task number does not exist! :(");
+            return GuiResponse.error("That task number does not exist! :(");
         }
 
         Task deleted = tasks.get(index - 1);

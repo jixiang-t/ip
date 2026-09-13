@@ -26,6 +26,17 @@
     -fx-padding: 10px 12px;
 }
 
+.error-bubble {
+    -fx-background-color: #fff7ed;
+    -fx-border-color: #fb923c;
+    -fx-border-width: 0 0 0 3px;
+}
+
+.error-text {
+    -fx-font-weight: bold;
+    -fx-text-fill: #9a3412;
+}
+
 .task-response {
     -fx-spacing: 8px;
 }
