@@ -47,6 +47,7 @@ public class DialogBox extends HBox {
 
         dialog.setText(text);
         displayPicture.setImage(image);
+        contentContainer.setFillWidth(true);
         getStyleClass().add("user-dialog");
         bindContentWidth(USER_BUBBLE_WIDTH_RATIO, USER_BUBBLE_MAX_WIDTH);
     }
@@ -147,6 +148,7 @@ public class DialogBox extends HBox {
     private VBox createResponseContent(GuiResponse response) {
         VBox content = new VBox();
         content.getStyleClass().add("task-response");
+        content.setFillWidth(true);
 
         Label heading = new Label(response.getHeading());
         heading.getStyleClass().add("dialog-text");

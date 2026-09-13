@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
@@ -33,6 +34,7 @@ public class TaskCard extends HBox {
 
         getStyleClass().add("task-card");
         setAlignment(Pos.TOP_LEFT);
+        setMaxWidth(Double.MAX_VALUE);
 
         Label number = new Label(String.valueOf(taskDisplay.getNumber()));
         number.getStyleClass().add("task-number");
@@ -42,7 +44,8 @@ public class TaskCard extends HBox {
 
         VBox details = new VBox();
         details.getStyleClass().add("task-details");
-        HBox.setHgrow(details, javafx.scene.layout.Priority.ALWAYS);
+        details.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(details, Priority.ALWAYS);
 
         Label description = new Label(task.getDescription());
         description.getStyleClass().add("task-description");
@@ -71,8 +74,7 @@ public class TaskCard extends HBox {
 
         Label metadataLabel = new Label(metadata);
         metadataLabel.getStyleClass().add("task-metadata");
-        metadataLabel.setWrapText(true);
-        metadataLabel.maxWidthProperty().bind(details.widthProperty());
+        metadataLabel.setWrapText(false);
         details.getChildren().add(metadataLabel);
     }
 
