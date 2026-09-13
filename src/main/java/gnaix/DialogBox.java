@@ -3,6 +3,7 @@ package gnaix;
 import java.io.IOException;
 import java.util.Collections;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,7 +21,9 @@ import javafx.scene.layout.VBox;
  */
 public class DialogBox extends HBox {
     private static final double USER_BUBBLE_MAX_WIDTH = 260.0;
-    private static final double GNAIX_BUBBLE_MAX_WIDTH = 360.0;
+    private static final double GNAIX_BUBBLE_MAX_WIDTH = 520.0;
+    private static final double USER_BUBBLE_WIDTH_RATIO = 0.68;
+    private static final double GNAIX_BUBBLE_WIDTH_RATIO = 0.88;
 
     @FXML
     private Label dialog;
@@ -45,7 +48,7 @@ public class DialogBox extends HBox {
         dialog.setText(text);
         displayPicture.setImage(image);
         getStyleClass().add("user-dialog");
-        contentContainer.setMaxWidth(USER_BUBBLE_MAX_WIDTH);
+        bindContentWidth(USER_BUBBLE_WIDTH_RATIO, USER_BUBBLE_MAX_WIDTH);
     }
 
     /**
@@ -59,8 +62,20 @@ public class DialogBox extends HBox {
         setAlignment(Pos.TOP_LEFT);
         getStyleClass().remove("user-dialog");
         getStyleClass().add("gnaix-dialog");
-        contentContainer.setMaxWidth(GNAIX_BUBBLE_MAX_WIDTH);
+        bindContentWidth(GNAIX_BUBBLE_WIDTH_RATIO, GNAIX_BUBBLE_MAX_WIDTH);
         contentContainer.getStyleClass().add("reply-bubble");
+    }
+
+    /**
+     * Keeps message bubbles readable at narrow and wide window sizes.
+     *
+     * @param widthRatio Portion of the dialog row the bubble may use.
+     * @param maxWidth Absolute maximum bubble width.
+     */
+    private void bindContentWidth(double widthRatio, double maxWidth) {
+        contentContainer.maxWidthProperty().unbind();
+        contentContainer.maxWidthProperty().bind(
+                Bindings.min(widthProperty().multiply(widthRatio), maxWidth));
     }
 
     /**

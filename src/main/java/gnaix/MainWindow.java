@@ -68,10 +68,9 @@ public class MainWindow extends AnchorPane {
 
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
 
-        dialogContainer.getChildren().add(
-                DialogBox.getGnaixDialog(
-                        "Hello! I'm Gnaix\nWhat can I do for you?",
-                        gnaixImage));
+        addDialogBoxes(DialogBox.getGnaixDialog(
+                "Hello! I'm Gnaix\nWhat can I do for you?",
+                gnaixImage));
         userInput.requestFocus();
     }
 
@@ -90,15 +89,26 @@ public class MainWindow extends AnchorPane {
 
         GuiResponse response = gnaix.getGuiResponse(input);
 
-        dialogContainer.getChildren().addAll(
+        addDialogBoxes(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getGnaixDialog(response, gnaixImage)
-        );
+                DialogBox.getGnaixDialog(response, gnaixImage));
 
         userInput.clear();
 
         if (input.equalsIgnoreCase("bye")) {
             sendButton.getScene().getWindow().hide();
+        }
+    }
+
+    /**
+     * Adds dialogs and lets each row track the current conversation width.
+     *
+     * @param dialogs Dialog rows to add.
+     */
+    private void addDialogBoxes(DialogBox... dialogs) {
+        for (DialogBox dialogBox : dialogs) {
+            dialogBox.prefWidthProperty().bind(dialogContainer.widthProperty());
+            dialogContainer.getChildren().add(dialogBox);
         }
     }
 }

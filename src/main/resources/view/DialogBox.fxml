@@ -9,7 +9,7 @@
 <fx:root alignment="TOP_RIGHT"
          maxHeight="1.7976931348623157E308"
          maxWidth="1.7976931348623157E308"
-         prefWidth="400.0"
+         minWidth="0.0"
          spacing="8.0"
          stylesheets="@../css/dialog-box.css"
          type="javafx.scene.layout.HBox"
@@ -18,7 +18,7 @@
 
     <children>
         <VBox fx:id="contentContainer"
-              maxWidth="300.0"
+              minWidth="0.0"
               styleClass="dialog-bubble">
             <padding>
                 <Insets bottom="8.0"
