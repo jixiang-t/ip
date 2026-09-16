@@ -135,7 +135,7 @@ public class Gnaix {
         try {
             storage.save(tasks.getTasks());
         } catch (IOException e) {
-            ui.showError("I couldn't save your tasks! :(");
+            ui.showError("I couldn't save your tasks.");
         }
     }
 

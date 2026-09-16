@@ -104,7 +104,7 @@ class ParserTest {
         assertTrue(result.hasError());
         assertEquals(Command.UNKNOWN, result.getCommand());
         assertEquals(
-                "Please enter a command! :(",
+                "You'll need to type a command.",
                 result.getError());
     }
 
@@ -128,7 +128,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "NO DESCRIPTION GIVEN! :(",
+                "That task needs a description.",
                 result.getError());
     }
 
@@ -138,7 +138,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "A deadline needs a description and a /by date! :(",
+                "That deadline needs a description and a /by date.",
                 result.getError());
     }
 
@@ -162,7 +162,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Not enough info given! :(",
+                "That event needs a description, /from time, and /to time.",
                 result.getError());
     }
 
@@ -173,7 +173,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "An event needs a description and timings! :(",
+                "That event needs a description, /from time, and /to time.",
                 result.getError());
     }
 
@@ -242,7 +242,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Please provide a keyword to search for! :(",
+                "Search for what? Give me a keyword.",
                 result.getError());
     }
 

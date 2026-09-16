@@ -61,7 +61,7 @@ public class Parser {
     public static ParsedCommand parse(String fullCommand) {
         String trimmed = fullCommand.trim();
         if (trimmed.isEmpty()) {
-            return ParsedCommand.error("Please enter a command! :(");
+            return ParsedCommand.error("You'll need to type a command.");
         }
 
         String[] parts = trimmed.split("\\s+", 2);
@@ -118,7 +118,7 @@ public class Parser {
         TaggedText taggedText = extractTrailingTags(args);
 
         if (taggedText.text().isEmpty()) {
-            return ParsedCommand.error("NO DESCRIPTION GIVEN! :(");
+            return ParsedCommand.error("That task needs a description.");
         }
 
         Todo todo = new Todo(taggedText.text());
@@ -139,7 +139,7 @@ public class Parser {
 
         if (segments.length < 2) {
             return ParsedCommand.error(
-                    "A deadline needs a description and a /by date! :(");
+                    "That deadline needs a description and a /by date.");
         }
 
         String info = segments[0].trim();
@@ -147,7 +147,7 @@ public class Parser {
 
         if (info.isEmpty() || by.isEmpty()) {
             return ParsedCommand.error(
-                    "A deadline needs a description and a /by date! :(");
+                    "That deadline needs a description and a /by date.");
         }
 
         try {
@@ -172,7 +172,8 @@ public class Parser {
         String[] parts = taggedText.text().split(" /from ", 2);
 
         if (parts.length < 2) {
-            return ParsedCommand.error("Not enough info given! :(");
+            return ParsedCommand.error(
+                    "That event needs a description, /from time, and /to time.");
         }
 
         String info = parts[0].trim();
@@ -180,7 +181,7 @@ public class Parser {
 
         if (info.isEmpty() || times.length < 2) {
             return ParsedCommand.error(
-                    "An event needs a description and timings! :(");
+                    "That event needs a description, /from time, and /to time.");
         }
 
         String from = times[0].trim();
@@ -188,7 +189,7 @@ public class Parser {
 
         if (from.isEmpty() || to.isEmpty()) {
             return ParsedCommand.error(
-                    "An event needs a /from time, and /to time! :(");
+                    "That event needs a /from time and /to time.");
         }
 
         try {
@@ -234,7 +235,7 @@ public class Parser {
     private static ParsedCommand parseFind(String args) {
         if (args.isEmpty()) {
             return ParsedCommand.error(
-                    "Please provide a keyword to search for! :(");
+                    "Search for what? Give me a keyword.");
         }
 
         return ParsedCommand.forKeyword(args);
