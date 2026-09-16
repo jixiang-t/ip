@@ -3,7 +3,6 @@ package gnaix;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -17,8 +16,18 @@ import gnaix.task.TaskList;
 public class Gnaix {
     private static final Path FILE_PATH = Path.of("data", "gnaix.txt");
 
-    private static final DateTimeFormatter OUTPUT_DATE_FORMAT =
-            DateTimeFormatter.ofPattern("MMM dd yyyy");
+    private static final String BYE_MESSAGE =
+            "All right. Goodbye."
+                    + System.lineSeparator()
+                    + "Try not to make more work for me.";
+    private static final String INVALID_COMMAND_MESSAGE =
+            "I don't know what that means."
+                    + System.lineSeparator()
+                    + "Try a valid command.";
+    private static final String INVALID_TASK_INDEX_MESSAGE =
+            "Which task?"
+                    + System.lineSeparator()
+                    + "You'll need to give me a task number.";
 
     private final Ui ui;
     private final Storage storage;
@@ -86,7 +95,7 @@ public class Gnaix {
     private String executeCommand(ParsedCommand parsed) {
         switch (parsed.getCommand()) {
             case BYE:
-                return "Bye. Hope to see you again soon!";
+                return BYE_MESSAGE;
             case LIST:
                 return getTaskListResponse();
             case TODO:
@@ -115,7 +124,7 @@ public class Gnaix {
                 return getTagResponse(parsed.getTags());
             default:
                 assert false : "Unexpected command after parsing";
-                return "That's not a valid command! :(";
+                return INVALID_COMMAND_MESSAGE;
         }
     }
 
@@ -191,7 +200,7 @@ public class Gnaix {
             case LIST:
                 return GuiResponse.withTasks(
                         getTaskListResponse(),
-                        "Here are the tasks in your list:",
+                        "Here. Your current list:",
                         getAllTaskDisplays(),
                         "");
             case TODO:
@@ -220,7 +229,7 @@ public class Gnaix {
                 return getTagGuiResponse(parsed.getTags());
             default:
                 assert false : "Unexpected command after parsing";
-                return GuiResponse.error("That's not a valid command! :(");
+                return GuiResponse.error(INVALID_COMMAND_MESSAGE);
         }
     }
 
@@ -231,7 +240,7 @@ public class Gnaix {
      */
     private String getTaskListResponse() {
         StringBuilder response =
-                new StringBuilder("Here are the tasks in your list:");
+                new StringBuilder("Here. Your current list:");
 
         for (int i = 0; i < tasks.size(); i++) {
             response.append(System.lineSeparator())
@@ -264,11 +273,11 @@ public class Gnaix {
         tasks.add(task);
         save();
 
-        return "Got it. I've added this task:"
+        return "Fine. I've added this:"
                 + System.lineSeparator()
                 + "  " + task
                 + System.lineSeparator()
-                + "Now you have " + tasks.size() + " tasks in the list.";
+                + "You now have " + tasks.size() + " tasks.";
     }
 
     /**
@@ -282,9 +291,9 @@ public class Gnaix {
 
         return GuiResponse.withTasks(
                 text,
-                "Got it. I've added this task:",
+                "Fine. I've added this:",
                 List.of(new TaskDisplay(tasks.size(), task)),
-                "Now you have " + tasks.size() + " tasks in the list.");
+                "You now have " + tasks.size() + " tasks.");
     }
 
     /**
@@ -295,14 +304,14 @@ public class Gnaix {
      */
     private String markTaskAndGetResponse(int index) {
         if (!isInRange(index)) {
-            return "That task number does not exist! :(";
+            return INVALID_TASK_INDEX_MESSAGE;
         }
 
         tasks.mark(index - 1);
         Task task = tasks.get(index - 1);
         save();
 
-        return "Nice! I've marked this task as done:"
+        return "There. It's done:"
                 + System.lineSeparator()
                 + "  " + task;
     }
@@ -315,14 +324,14 @@ public class Gnaix {
      */
     private GuiResponse markTaskAndGetGuiResponse(int index) {
         if (!isInRange(index)) {
-            return GuiResponse.error("That task number does not exist! :(");
+            return GuiResponse.error(INVALID_TASK_INDEX_MESSAGE);
         }
 
         String text = markTaskAndGetResponse(index);
 
         return GuiResponse.withTasks(
                 text,
-                "Nice! I've marked this task as done:",
+                "There. It's done:",
                 List.of(new TaskDisplay(index, tasks.get(index - 1))),
                 "");
     }
@@ -335,14 +344,14 @@ public class Gnaix {
      */
     private String unmarkTaskAndGetResponse(int index) {
         if (!isInRange(index)) {
-            return "That task number does not exist! :(";
+            return INVALID_TASK_INDEX_MESSAGE;
         }
 
         tasks.unmark(index - 1);
         Task task = tasks.get(index - 1);
         save();
 
-        return "OK, I've marked this task as not done yet:"
+        return "Apparently we're undoing that."
                 + System.lineSeparator()
                 + "  " + task;
     }
@@ -355,14 +364,14 @@ public class Gnaix {
      */
     private GuiResponse unmarkTaskAndGetGuiResponse(int index) {
         if (!isInRange(index)) {
-            return GuiResponse.error("That task number does not exist! :(");
+            return GuiResponse.error(INVALID_TASK_INDEX_MESSAGE);
         }
 
         String text = unmarkTaskAndGetResponse(index);
 
         return GuiResponse.withTasks(
                 text,
-                "OK, I've marked this task as not done yet:",
+                "Apparently we're undoing that.",
                 List.of(new TaskDisplay(index, tasks.get(index - 1))),
                 "");
     }
@@ -375,17 +384,17 @@ public class Gnaix {
      */
     private String deleteTaskAndGetResponse(int index) {
         if (!isInRange(index)) {
-            return "That task number does not exist! :(";
+            return INVALID_TASK_INDEX_MESSAGE;
         }
 
         Task deleted = tasks.delete(index - 1);
         save();
 
-        return "Noted. I've removed this task:"
+        return "Gone. I've removed this:"
                 + System.lineSeparator()
                 + "  " + deleted
                 + System.lineSeparator()
-                + "Now you have " + tasks.size() + " tasks in the list.";
+                + "You now have " + tasks.size() + " tasks left.";
     }
 
     /**
@@ -396,7 +405,7 @@ public class Gnaix {
      */
     private GuiResponse deleteTaskAndGetGuiResponse(int index) {
         if (!isInRange(index)) {
-            return GuiResponse.error("That task number does not exist! :(");
+            return GuiResponse.error(INVALID_TASK_INDEX_MESSAGE);
         }
 
         Task deleted = tasks.get(index - 1);
@@ -404,9 +413,9 @@ public class Gnaix {
 
         return GuiResponse.withTasks(
                 text,
-                "Noted. I've removed this task:",
+                "Gone. I've removed this:",
                 List.of(new TaskDisplay(index, deleted)),
-                "Now you have " + tasks.size() + " tasks in the list.");
+                "You now have " + tasks.size() + " tasks left.");
     }
 
     /**
@@ -417,7 +426,7 @@ public class Gnaix {
      */
     private String getFindResponse(String keyword) {
         StringBuilder response =
-                new StringBuilder("Here are the matching tasks in your list:");
+                new StringBuilder("These are the tasks that match your search:");
 
         String normalisedKeyword = keyword.toLowerCase();
 
@@ -435,8 +444,7 @@ public class Gnaix {
                         .append(tasks.get(index)));
 
         if (matchingIndices.isEmpty()) {
-            response.append(System.lineSeparator())
-                    .append("No matching tasks found :(");
+            return "Nothing matched that search.";
         }
 
         return response.toString();
@@ -458,7 +466,7 @@ public class Gnaix {
 
         return GuiResponse.withTasks(
                 text,
-                "Here are the matching tasks in your list:",
+                "These are the tasks that match your search:",
                 matchingTasks,
                 "");
     }
@@ -471,7 +479,7 @@ public class Gnaix {
      */
     private String getTagResponse(Set<String> tags) {
         StringBuilder response =
-                new StringBuilder("Here are the tasks with the specified tags:");
+                new StringBuilder("These are the tasks carrying those tags:");
 
         List<Integer> matchingIndices = IntStream.range(0, tasks.size())
                 .filter(i -> tasks.get(i).getTags().containsAll(tags))
@@ -485,8 +493,7 @@ public class Gnaix {
                         .append(tasks.get(index)));
 
         if (matchingIndices.isEmpty()) {
-            response.append(System.lineSeparator())
-                    .append("No tasks found with the specified tags :(");
+            return "Nothing has all of those tags.";
         }
 
         return response.toString();
@@ -508,7 +515,7 @@ public class Gnaix {
 
         return GuiResponse.withTasks(
                 text,
-                "Here are the tasks with the specified tags:",
+                "These are the tasks carrying those tags:",
                 matchingTasks,
                 "");
     }
@@ -521,10 +528,7 @@ public class Gnaix {
      */
     private String getDateResponse(LocalDate date) {
         StringBuilder response =
-                new StringBuilder(
-                        "Tasks occurring on "
-                                + date.format(OUTPUT_DATE_FORMAT)
-                                + ":");
+                new StringBuilder("These are the tasks scheduled for that date:");
 
         List<Task> matchingTasks = tasks.getTasks().stream()
                 .filter(task -> task.occursOn(date))
@@ -535,8 +539,7 @@ public class Gnaix {
                         .append(task));
 
         if (matchingTasks.isEmpty()) {
-            response.append(System.lineSeparator())
-                    .append("No deadlines or events found on that date.");
+            return "Nothing is scheduled for that date.";
         }
 
         return response.toString();
@@ -558,7 +561,7 @@ public class Gnaix {
 
         return GuiResponse.withTasks(
                 text,
-                "Tasks occurring on " + date.format(OUTPUT_DATE_FORMAT) + ":",
+                "These are the tasks scheduled for that date:",
                 matchingTasks,
                 "");
     }

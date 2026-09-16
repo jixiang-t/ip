@@ -115,7 +115,9 @@ class ParserTest {
         assertTrue(result.hasError());
         assertEquals(Command.UNKNOWN, result.getCommand());
         assertEquals(
-                "That's not a valid command! :(",
+                "I don't know what that means."
+                        + System.lineSeparator()
+                        + "Try a valid command.",
                 result.getError());
         assertNull(result.getTask());
     }
@@ -147,7 +149,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Please enter the deadline as yyyy-MM-dd! :(",
+                "That date doesn't work."
+                        + System.lineSeparator()
+                        + "Use yyyy-MM-dd.",
                 result.getError());
     }
 
@@ -181,7 +185,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Please enter event times as yyyy-MM-dd HHmm! :(",
+                "That date doesn't work."
+                        + System.lineSeparator()
+                        + "Use yyyy-MM-dd HHmm.",
                 result.getError());
     }
 
@@ -191,7 +197,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Please enter the date as yyyy-MM-dd! :(",
+                "That date doesn't work."
+                        + System.lineSeparator()
+                        + "Use yyyy-MM-dd.",
                 result.getError());
     }
 
@@ -201,7 +209,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "That task number is not a number! :(",
+                "Which task?"
+                        + System.lineSeparator()
+                        + "You'll need to give me a task number.",
                 result.getError());
     }
 
@@ -211,7 +221,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "That task number is not a number! :(",
+                "Which task?"
+                        + System.lineSeparator()
+                        + "You'll need to give me a task number.",
                 result.getError());
     }
 

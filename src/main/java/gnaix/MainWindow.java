@@ -73,7 +73,7 @@ public class MainWindow extends AnchorPane {
         scrollPane.addEventFilter(ScrollEvent.SCROLL, this::handleScroll);
 
         addDialogBoxes(DialogBox.getGnaixDialog(
-                "Hello! I'm Gnaix\nWhat can I do for you?",
+                "Hello. I'm Gnaix.\nWhat do you need?",
                 gnaixImage));
         userInput.requestFocus();
     }

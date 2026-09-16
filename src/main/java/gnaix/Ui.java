@@ -34,8 +34,8 @@ public class Ui {
     public void showWelcome() {
         System.out.println(SEPARATOR);
         System.out.println(BANNER);
-        System.out.println("Hello! I'm Gnaix");
-        System.out.println("What can I do for you?");
+        System.out.println("Hello. I'm Gnaix.");
+        System.out.println("What do you need?");
     }
 
     /**
@@ -80,9 +80,9 @@ public class Ui {
      */
     public void showTaskAdded(Task task, int taskCount) {
         showMessages(
-                "Got it. I've added this task:",
+                "Fine. I've added this:",
                 "  " + task,
-                "Now you have " + taskCount + " tasks in the list.");
+                "You now have " + taskCount + " tasks.");
     }
 
     /**
@@ -92,7 +92,7 @@ public class Ui {
      */
     public void showTaskCompleted(Task task) {
         showMessages(
-                "Nice! I've marked this task as done:",
+                "There. It's done:",
                 "  " + task);
     }
 
@@ -103,7 +103,7 @@ public class Ui {
      */
     public void showTaskUncompleted(Task task) {
         showMessages(
-                "OK, I've marked this task as not done yet:",
+                "Apparently we're undoing that.",
                 "  " + task);
     }
 
@@ -115,9 +115,9 @@ public class Ui {
      */
     public void showTaskDeleted(Task task, int taskCount) {
         showMessages(
-                "Noted. I've removed this task:",
+                "Gone. I've removed this:",
                 "  " + task,
-                "Now you have " + taskCount + " tasks in the list.");
+                "You now have " + taskCount + " tasks left.");
     }
 
     /**
@@ -126,7 +126,7 @@ public class Ui {
      * @param tasks Task list to display.
      */
     public void showTasks(TaskList tasks) {
-        System.out.println("Here are the tasks in your list:");
+        System.out.println("Here. Your current list:");
 
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + ". " + tasks.get(i));
@@ -138,7 +138,8 @@ public class Ui {
      */
     public void showGoodbye() {
         System.out.println(SEPARATOR);
-        System.out.println("Bye. Hope to see you again soon!");
+        System.out.println("All right. Goodbye.");
+        System.out.println("Try not to make more work for me.");
         System.out.println(SEPARATOR);
     }
 
