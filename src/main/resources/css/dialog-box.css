@@ -1,14 +1,109 @@
-.label {
-    -fx-background-color: #dbeafe;
+.user-dialog {
+    -fx-alignment: top-right;
+}
+
+.gnaix-dialog {
+    -fx-alignment: top-left;
+}
+
+.dialog-bubble {
+    -fx-background-color: #e0ecff;
     -fx-background-radius: 16px 16px 4px 16px;
-    -fx-padding: 10px 14px;
+    -fx-padding: 8px 12px;
+}
+
+.dialog-text {
     -fx-font-size: 14px;
+    -fx-line-spacing: 2px;
     -fx-text-fill: #1f2937;
 }
 
-.reply-label {
+.reply-bubble {
     -fx-background-color: white;
     -fx-background-radius: 16px 16px 16px 4px;
     -fx-border-color: #e5e7eb;
     -fx-border-radius: 16px 16px 16px 4px;
+    -fx-padding: 10px 12px;
+}
+
+.error-bubble {
+    -fx-background-color: #fff7ed;
+    -fx-border-color: #fb923c;
+    -fx-border-width: 0 0 0 3px;
+}
+
+.error-text {
+    -fx-font-weight: bold;
+    -fx-text-fill: #9a3412;
+}
+
+.task-response {
+    -fx-spacing: 8px;
+}
+
+.task-card {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8px;
+    -fx-padding: 8px;
+    -fx-spacing: 8px;
+}
+
+.task-identity {
+    -fx-alignment: top-center;
+    -fx-min-width: 22px;
+    -fx-spacing: 2px;
+}
+
+.task-number {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6b7280;
+}
+
+.task-type {
+    -fx-background-color: #e5e7eb;
+    -fx-background-radius: 4px;
+    -fx-padding: 1px 5px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4b5563;
+}
+
+.task-status {
+    -fx-font-size: 16px;
+    -fx-text-fill: #2563eb;
+    -fx-min-width: 18px;
+}
+
+.task-details {
+    -fx-spacing: 3px;
+}
+
+.task-description {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.task-metadata {
+    -fx-font-size: 12px;
+    -fx-text-fill: #4b5563;
+}
+
+.task-tags {
+    -fx-hgap: 4px;
+    -fx-vgap: 4px;
+    -fx-padding: 3px 0 0 0;
+}
+
+.task-tag {
+    -fx-background-color: #eef2ff;
+    -fx-background-radius: 999px;
+    -fx-border-color: #c7d2fe;
+    -fx-border-radius: 999px;
+    -fx-padding: 2px 7px;
+    -fx-font-size: 11px;
+    -fx-text-fill: #3730a3;
 }

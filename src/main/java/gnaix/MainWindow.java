@@ -1,5 +1,6 @@
 package gnaix;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -7,6 +8,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -14,6 +16,7 @@ import javafx.scene.layout.VBox;
  * Controller for the main Gnaix GUI.
  */
 public class MainWindow extends AnchorPane {
+    private static final double SCROLL_SPEED_MULTIPLIER = 2.5;
 
     private final Image userImage =
             new Image(getClass().getResourceAsStream("/images/Stewie.png"));
@@ -66,12 +69,12 @@ public class MainWindow extends AnchorPane {
         headerImage.setImage(gnaixImage);
         headerBanner.setText(banner);
 
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        dialogContainer.heightProperty().addListener(observable -> scrollToBottom());
+        scrollPane.addEventFilter(ScrollEvent.SCROLL, this::handleScroll);
 
-        dialogContainer.getChildren().add(
-                DialogBox.getGnaixDialog(
-                        "Hello! I'm Gnaix\nWhat can I do for you?",
-                        gnaixImage));
+        addDialogBoxes(DialogBox.getGnaixDialog(
+                "Hello! I'm Gnaix\nWhat can I do for you?",
+                gnaixImage));
         userInput.requestFocus();
     }
 
@@ -88,17 +91,55 @@ public class MainWindow extends AnchorPane {
             return;
         }
 
-        String response = gnaix.getResponse(input);
+        GuiResponse response = gnaix.getGuiResponse(input);
 
-        dialogContainer.getChildren().addAll(
+        addDialogBoxes(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getGnaixDialog(response, gnaixImage)
-        );
+                DialogBox.getGnaixDialog(response, gnaixImage));
 
         userInput.clear();
 
         if (input.equalsIgnoreCase("bye")) {
             sendButton.getScene().getWindow().hide();
         }
+    }
+
+    /**
+     * Adds dialogs and lets each row track the current conversation width.
+     *
+     * @param dialogs Dialog rows to add.
+     */
+    private void addDialogBoxes(DialogBox... dialogs) {
+        for (DialogBox dialogBox : dialogs) {
+            dialogBox.prefWidthProperty().bind(dialogContainer.widthProperty());
+            dialogContainer.getChildren().add(dialogBox);
+        }
+    }
+
+    /**
+     * Scrolls after JavaFX has laid out newly added dialog boxes.
+     */
+    private void scrollToBottom() {
+        Platform.runLater(() -> scrollPane.setVvalue(1.0));
+    }
+
+    /**
+     * Makes mouse-wheel scrolling feel more responsive in long conversations.
+     *
+     * @param event Scroll event from the conversation area.
+     */
+    private void handleScroll(ScrollEvent event) {
+        double contentHeight = dialogContainer.getBoundsInLocal().getHeight();
+        double viewportHeight = scrollPane.getViewportBounds().getHeight();
+        double scrollableHeight = contentHeight - viewportHeight;
+
+        if (scrollableHeight <= 0) {
+            return;
+        }
+
+        double scrollDelta = event.getDeltaY() * SCROLL_SPEED_MULTIPLIER / scrollableHeight;
+        double nextValue = scrollPane.getVvalue() - scrollDelta;
+        scrollPane.setVvalue(Math.max(0.0, Math.min(1.0, nextValue)));
+        event.consume();
     }
 }

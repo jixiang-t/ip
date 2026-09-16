@@ -160,6 +160,71 @@ public class Gnaix {
     }
 
     /**
+     * Processes a user command and returns structured response data for the GUI.
+     *
+     * @param input User command.
+     * @return Response containing text and optional task display data.
+     */
+    public GuiResponse getGuiResponse(String input) {
+        assert tasks != null : "Task list must be initialised before processing commands";
+
+        ParsedCommand parsed = Parser.parse(input);
+        assert parsed != null : "Parser should always return a command result";
+
+        if (parsed.hasError()) {
+            return GuiResponse.error(parsed.getError());
+        }
+
+        return executeGuiCommand(parsed);
+    }
+
+    /**
+     * Executes a command and keeps task data for GUI rendering where useful.
+     *
+     * @param parsed Parsed command to execute.
+     * @return Structured response for the GUI.
+     */
+    private GuiResponse executeGuiCommand(ParsedCommand parsed) {
+        switch (parsed.getCommand()) {
+            case BYE:
+                return GuiResponse.plain(executeCommand(parsed));
+            case LIST:
+                return GuiResponse.withTasks(
+                        getTaskListResponse(),
+                        "Here are the tasks in your list:",
+                        getAllTaskDisplays(),
+                        "");
+            case TODO:
+            case DEADLINE:
+            case EVENT:
+                assert parsed.getTask() != null
+                        : "Task command should contain a parsed task";
+                return addTaskAndGetGuiResponse(parsed.getTask());
+            case MARK:
+                return markTaskAndGetGuiResponse(parsed.getIndex());
+            case UNMARK:
+                return unmarkTaskAndGetGuiResponse(parsed.getIndex());
+            case DELETE:
+                return deleteTaskAndGetGuiResponse(parsed.getIndex());
+            case DATE:
+                assert parsed.getDate() != null
+                        : "Date command should contain a parsed date";
+                return getDateGuiResponse(parsed.getDate());
+            case FIND:
+                assert parsed.getKeyword() != null
+                        : "Find command should contain a parsed keyword";
+                return getFindGuiResponse(parsed.getKeyword());
+            case TAG:
+                assert !parsed.getTags().isEmpty()
+                        : "Tag command should contain at least one tag";
+                return getTagGuiResponse(parsed.getTags());
+            default:
+                assert false : "Unexpected command after parsing";
+                return GuiResponse.error("That's not a valid command! :(");
+        }
+    }
+
+    /**
      * Returns a formatted representation of the current task list.
      *
      * @return Formatted task list.
@@ -179,6 +244,17 @@ public class Gnaix {
     }
 
     /**
+     * Returns display data for all tasks in their current order.
+     *
+     * @return Numbered task display data.
+     */
+    private List<TaskDisplay> getAllTaskDisplays() {
+        return IntStream.range(0, tasks.size())
+                .mapToObj(index -> new TaskDisplay(index + 1, tasks.get(index)))
+                .toList();
+    }
+
+    /**
      * Adds a task and returns the corresponding response.
      *
      * @param task Task to add.
@@ -193,6 +269,22 @@ public class Gnaix {
                 + "  " + task
                 + System.lineSeparator()
                 + "Now you have " + tasks.size() + " tasks in the list.";
+    }
+
+    /**
+     * Adds a task and returns a GUI response containing the new task.
+     *
+     * @param task Task to add.
+     * @return Structured response describing the added task.
+     */
+    private GuiResponse addTaskAndGetGuiResponse(Task task) {
+        String text = addTaskAndGetResponse(task);
+
+        return GuiResponse.withTasks(
+                text,
+                "Got it. I've added this task:",
+                List.of(new TaskDisplay(tasks.size(), task)),
+                "Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /**
@@ -216,6 +308,26 @@ public class Gnaix {
     }
 
     /**
+     * Marks a task as complete and returns task display data for the GUI.
+     *
+     * @param index One-based task number.
+     * @return Structured response describing the result.
+     */
+    private GuiResponse markTaskAndGetGuiResponse(int index) {
+        if (!isInRange(index)) {
+            return GuiResponse.error("That task number does not exist! :(");
+        }
+
+        String text = markTaskAndGetResponse(index);
+
+        return GuiResponse.withTasks(
+                text,
+                "Nice! I've marked this task as done:",
+                List.of(new TaskDisplay(index, tasks.get(index - 1))),
+                "");
+    }
+
+    /**
      * Marks a task as incomplete and returns the corresponding response.
      *
      * @param index One-based task number.
@@ -233,6 +345,26 @@ public class Gnaix {
         return "OK, I've marked this task as not done yet:"
                 + System.lineSeparator()
                 + "  " + task;
+    }
+
+    /**
+     * Marks a task as incomplete and returns task display data for the GUI.
+     *
+     * @param index One-based task number.
+     * @return Structured response describing the result.
+     */
+    private GuiResponse unmarkTaskAndGetGuiResponse(int index) {
+        if (!isInRange(index)) {
+            return GuiResponse.error("That task number does not exist! :(");
+        }
+
+        String text = unmarkTaskAndGetResponse(index);
+
+        return GuiResponse.withTasks(
+                text,
+                "OK, I've marked this task as not done yet:",
+                List.of(new TaskDisplay(index, tasks.get(index - 1))),
+                "");
     }
 
     /**
@@ -254,6 +386,27 @@ public class Gnaix {
                 + "  " + deleted
                 + System.lineSeparator()
                 + "Now you have " + tasks.size() + " tasks in the list.";
+    }
+
+    /**
+     * Deletes a task and returns the removed task for GUI display.
+     *
+     * @param index One-based task number.
+     * @return Structured response describing the deleted task.
+     */
+    private GuiResponse deleteTaskAndGetGuiResponse(int index) {
+        if (!isInRange(index)) {
+            return GuiResponse.error("That task number does not exist! :(");
+        }
+
+        Task deleted = tasks.get(index - 1);
+        String text = deleteTaskAndGetResponse(index);
+
+        return GuiResponse.withTasks(
+                text,
+                "Noted. I've removed this task:",
+                List.of(new TaskDisplay(index, deleted)),
+                "Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /**
@@ -290,6 +443,27 @@ public class Gnaix {
     }
 
     /**
+     * Returns matching task data for a GUI find response.
+     *
+     * @param keyword Keyword to search for.
+     * @return Structured response containing matching tasks.
+     */
+    private GuiResponse getFindGuiResponse(String keyword) {
+        String text = getFindResponse(keyword);
+        List<TaskDisplay> matchingTasks = getFindTaskDisplays(keyword);
+
+        if (matchingTasks.isEmpty()) {
+            return GuiResponse.plain(text);
+        }
+
+        return GuiResponse.withTasks(
+                text,
+                "Here are the matching tasks in your list:",
+                matchingTasks,
+                "");
+    }
+
+    /**
      * Returns tasks containing all of the specified tags.
      *
      * @param tags Tags that matching tasks must contain.
@@ -319,6 +493,27 @@ public class Gnaix {
     }
 
     /**
+     * Returns matching task data for a GUI tag-search response.
+     *
+     * @param tags Tags that matching tasks must contain.
+     * @return Structured response containing matching tasks.
+     */
+    private GuiResponse getTagGuiResponse(Set<String> tags) {
+        String text = getTagResponse(tags);
+        List<TaskDisplay> matchingTasks = getTagTaskDisplays(tags);
+
+        if (matchingTasks.isEmpty()) {
+            return GuiResponse.plain(text);
+        }
+
+        return GuiResponse.withTasks(
+                text,
+                "Here are the tasks with the specified tags:",
+                matchingTasks,
+                "");
+    }
+
+    /**
      * Returns tasks occurring on the specified date.
      *
      * @param date Date to search.
@@ -345,5 +540,69 @@ public class Gnaix {
         }
 
         return response.toString();
+    }
+
+    /**
+     * Returns dated task data for GUI display.
+     *
+     * @param date Date to search.
+     * @return Structured response containing tasks on the date.
+     */
+    private GuiResponse getDateGuiResponse(LocalDate date) {
+        String text = getDateResponse(date);
+        List<TaskDisplay> matchingTasks = getDateTaskDisplays(date);
+
+        if (matchingTasks.isEmpty()) {
+            return GuiResponse.plain(text);
+        }
+
+        return GuiResponse.withTasks(
+                text,
+                "Tasks occurring on " + date.format(OUTPUT_DATE_FORMAT) + ":",
+                matchingTasks,
+                "");
+    }
+
+    /**
+     * Returns task displays whose descriptions contain the specified keyword.
+     *
+     * @param keyword Keyword to search for.
+     * @return Numbered task display data for matching tasks.
+     */
+    private List<TaskDisplay> getFindTaskDisplays(String keyword) {
+        String normalisedKeyword = keyword.toLowerCase();
+
+        return IntStream.range(0, tasks.size())
+                .filter(i -> tasks.get(i).getDescription()
+                        .toLowerCase()
+                        .contains(normalisedKeyword))
+                .mapToObj(index -> new TaskDisplay(index + 1, tasks.get(index)))
+                .toList();
+    }
+
+    /**
+     * Returns task displays containing all of the specified tags.
+     *
+     * @param tags Tags that matching tasks must contain.
+     * @return Numbered task display data for matching tasks.
+     */
+    private List<TaskDisplay> getTagTaskDisplays(Set<String> tags) {
+        return IntStream.range(0, tasks.size())
+                .filter(i -> tasks.get(i).getTags().containsAll(tags))
+                .mapToObj(index -> new TaskDisplay(index + 1, tasks.get(index)))
+                .toList();
+    }
+
+    /**
+     * Returns task displays occurring on the specified date.
+     *
+     * @param date Date to search.
+     * @return Numbered task display data for matching tasks.
+     */
+    private List<TaskDisplay> getDateTaskDisplays(LocalDate date) {
+        return IntStream.range(0, tasks.size())
+                .filter(i -> tasks.get(i).occursOn(date))
+                .mapToObj(index -> new TaskDisplay(index + 1, tasks.get(index)))
+                .toList();
     }
 }
