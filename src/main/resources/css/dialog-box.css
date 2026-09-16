@@ -7,34 +7,36 @@
 }
 
 .dialog-bubble {
-    -fx-background-color: #e0ecff;
-    -fx-background-radius: 16px 16px 4px 16px;
+    -fx-background-color: #f2d995;
+    -fx-background-radius: 12px 12px 4px 12px;
+    -fx-border-color: #d3b660;
+    -fx-border-radius: 12px 12px 4px 12px;
     -fx-padding: 8px 12px;
 }
 
 .dialog-text {
     -fx-font-size: 14px;
     -fx-line-spacing: 2px;
-    -fx-text-fill: #1f2937;
+    -fx-text-fill: #1f2933;
 }
 
 .reply-bubble {
-    -fx-background-color: white;
-    -fx-background-radius: 16px 16px 16px 4px;
-    -fx-border-color: #e5e7eb;
-    -fx-border-radius: 16px 16px 16px 4px;
+    -fx-background-color: #f8fbfc;
+    -fx-background-radius: 12px 12px 12px 4px;
+    -fx-border-color: #b9cbd6;
+    -fx-border-radius: 12px 12px 12px 4px;
     -fx-padding: 10px 12px;
 }
 
 .error-bubble {
-    -fx-background-color: #fff7ed;
-    -fx-border-color: #fb923c;
+    -fx-background-color: #fff3ec;
+    -fx-border-color: #c76b4a;
     -fx-border-width: 0 0 0 3px;
 }
 
 .error-text {
     -fx-font-weight: bold;
-    -fx-text-fill: #9a3412;
+    -fx-text-fill: #8f3f2f;
 }
 
 .task-response {
@@ -42,9 +44,9 @@
 }
 
 .task-card {
-    -fx-background-color: #f9fafb;
+    -fx-background-color: #fffdf8;
     -fx-background-radius: 8px;
-    -fx-border-color: #e5e7eb;
+    -fx-border-color: #dbe3e7;
     -fx-border-radius: 8px;
     -fx-padding: 8px;
     -fx-spacing: 8px;
@@ -59,21 +61,21 @@
 .task-number {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-text-fill: #6b7280;
+    -fx-text-fill: #53636f;
 }
 
 .task-type {
-    -fx-background-color: #e5e7eb;
+    -fx-background-color: #e5eef2;
     -fx-background-radius: 4px;
     -fx-padding: 1px 5px;
     -fx-font-size: 10px;
     -fx-font-weight: bold;
-    -fx-text-fill: #4b5563;
+    -fx-text-fill: #304d62;
 }
 
 .task-status {
     -fx-font-size: 16px;
-    -fx-text-fill: #2563eb;
+    -fx-text-fill: #4d748d;
     -fx-min-width: 18px;
 }
 
@@ -84,12 +86,12 @@
 .task-description {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-text-fill: #111827;
+    -fx-text-fill: #1f2933;
 }
 
 .task-metadata {
     -fx-font-size: 12px;
-    -fx-text-fill: #4b5563;
+    -fx-text-fill: #53636f;
 }
 
 .task-tags {
@@ -99,11 +101,11 @@
 }
 
 .task-tag {
-    -fx-background-color: #eef2ff;
+    -fx-background-color: #e5eef2;
     -fx-background-radius: 999px;
-    -fx-border-color: #c7d2fe;
+    -fx-border-color: #b9cbd6;
     -fx-border-radius: 999px;
     -fx-padding: 2px 7px;
     -fx-font-size: 11px;
-    -fx-text-fill: #3730a3;
+    -fx-text-fill: #304d62;
 }
