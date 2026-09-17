@@ -107,3 +107,8 @@ Run the full build:
 
 Keep `src/main/java` as the Java source root so Gradle and the IDE can locate
 the source files correctly.
+
+## Credits
+
+Character-style GUI images are credited to *Family Guy* and used for this
+non-commercial educational project.
