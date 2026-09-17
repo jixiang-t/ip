@@ -36,11 +36,16 @@ public class TaskCard extends HBox {
         if (task.isCompleted()) {
             getStyleClass().add("task-card-completed");
         }
-        setAlignment(Pos.TOP_LEFT);
         setMaxWidth(Double.MAX_VALUE);
 
-        VBox identity = new VBox();
+        HBox summary = new HBox();
+        summary.getStyleClass().add("task-summary");
+        summary.setAlignment(Pos.TOP_LEFT);
+        summary.setMaxWidth(Double.MAX_VALUE);
+
+        HBox identity = new HBox();
         identity.getStyleClass().add("task-identity");
+        identity.setAlignment(Pos.CENTER_LEFT);
 
         Label number = new Label(String.valueOf(taskDisplay.getNumber()));
         number.getStyleClass().add("task-number");
@@ -62,14 +67,16 @@ public class TaskCard extends HBox {
         Label description = new Label(task.getDescription());
         description.getStyleClass().add("task-description");
         description.setWrapText(true);
-        description.maxWidthProperty().bind(details.widthProperty());
+        description.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(description, Priority.ALWAYS);
 
-        details.getChildren().add(description);
+        identity.getChildren().addAll(number, type);
+        summary.getChildren().addAll(identity, status, description);
+        details.getChildren().add(summary);
         addMetadata(task, details);
         addTags(task, details);
 
-        identity.getChildren().addAll(number, type);
-        getChildren().addAll(identity, status, details);
+        getChildren().add(details);
     }
 
     /**
@@ -88,6 +95,7 @@ public class TaskCard extends HBox {
         Label metadataLabel = new Label(metadata);
         metadataLabel.getStyleClass().add("task-metadata");
         metadataLabel.setWrapText(false);
+        metadataLabel.setMaxWidth(Double.MAX_VALUE);
         details.getChildren().add(metadataLabel);
     }
 
@@ -138,11 +146,11 @@ public class TaskCard extends HBox {
      * Returns the compact task type label used beside each task card.
      *
      * @param task Task being displayed.
-     * @return TODO, DUE, or EVENT depending on the task type.
+     * @return TODO, DEADLINE, or EVENT depending on the task type.
      */
     private String getTaskType(Task task) {
         if (task instanceof Deadline) {
-            return "DUE";
+            return "DEADLINE";
         }
 
         if (task instanceof Event) {

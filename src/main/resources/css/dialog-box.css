@@ -61,23 +61,27 @@
     -fx-border-color: #dbe3e7;
     -fx-border-radius: 8px;
     -fx-padding: 7px 8px;
-    -fx-spacing: 7px;
 }
 
 .task-card-completed {
     -fx-background-color: #f6f8f8;
 }
 
+.task-summary {
+    -fx-spacing: 7px;
+}
+
 .task-identity {
-    -fx-alignment: top-center;
-    -fx-min-width: 38px;
-    -fx-spacing: 2px;
+    -fx-alignment: center-left;
+    -fx-min-width: 88px;
+    -fx-spacing: 5px;
 }
 
 .task-number {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-text-fill: #53636f;
+    -fx-min-width: 12px;
 }
 
 .task-type {
@@ -100,8 +104,8 @@
 }
 
 .task-type-event {
-    -fx-background-color: #dfeaf0;
-    -fx-text-fill: #2d5870;
+    -fx-background-color: #dcebdd;
+    -fx-text-fill: #315f3d;
 }
 
 .task-status {
@@ -118,7 +122,7 @@
 }
 
 .task-details {
-    -fx-spacing: 3px;
+    -fx-spacing: 4px;
 }
 
 .task-description {
