@@ -205,6 +205,7 @@ Enter:
 ```text
 bye
 ```
+You can also close the application window normally.
 
 ## Quick start
 
@@ -217,5 +218,3 @@ event team meeting /from 2026-09-18 1400 /to 2026-09-18 1530 #team #project
 list
 tag #school
 ```
-
-You can also close the application window normally.
