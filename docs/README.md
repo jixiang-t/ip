@@ -1,50 +1,87 @@
 # Gnaix User Guide
 
-Gnaix helps you manage todos, deadlines, events, keyword searches, date
-searches, and tags through a JavaFX chat-style interface.
+Gnaix is a desktop task manager that helps you manage todos, deadlines,
+events, and tagged tasks through a simple JavaFX chat-style interface.
+
+![Gnaix GUI](Ui.png)
 
 ## Starting Gnaix
 
-Run the application from the Gradle wrapper:
+1. Download `gnaix.jar` from the latest GitHub release.
+2. Ensure that Java 25 is installed.
+3. Open a terminal in the folder containing `gnaix.jar`.
+4. Run:
 
 ```bash
-./gradlew run
+java -jar gnaix.jar
 ```
 
-On Windows:
+Gnaix stores your tasks automatically and restores them the next time you
+start the application from the same location.
 
-```bash
-.\gradlew.bat run
-```
+## Command summary
 
-You can also build and run the executable JAR:
-
-```bash
-./gradlew build
-java -jar build/libs/gnaix.jar
-```
+| Command | Purpose |
+| --- | --- |
+| `todo DESCRIPTION` | Add a todo |
+| `deadline DESCRIPTION /by DATE` | Add a deadline |
+| `event DESCRIPTION /from START /to END` | Add an event |
+| `list` | Show all tasks |
+| `mark NUMBER` | Mark a task as done |
+| `unmark NUMBER` | Mark a task as not done |
+| `delete NUMBER` | Delete a task |
+| `find KEYWORD` | Find tasks by description |
+| `date DATE` | Find deadlines and events occurring on a date |
+| `tag #TAG...` | Find tasks containing all specified tags |
+| `bye` | Exit Gnaix |
 
 ## Adding tasks
 
-Add a todo:
+### Adding a todo
+
+Use `todo` followed by a description:
 
 ```text
 todo read lecture notes
 ```
 
-Add a deadline:
+You can also attach one or more tags:
 
 ```text
-deadline submit quiz /by 2026-09-10
+todo revise chapters #school #urgent
 ```
 
-Add an event:
+### Adding a deadline
+
+Use `deadline` with `/by` followed by a date in `yyyy-MM-dd` format:
 
 ```text
-event project meeting /from 2026-09-15 1000 /to 2026-09-15 1100
+deadline submit quiz /by 2026-09-20
 ```
 
-## Listing and updating tasks
+Tags can be added at the end:
+
+```text
+deadline submit project report /by 2026-09-20 #school #urgent
+```
+
+### Adding an event
+
+Use `event` with `/from` and `/to` to specify the start and end date and time:
+
+```text
+event project meeting /from 2026-09-21 1400 /to 2026-09-21 1530
+```
+
+Tags can also be added:
+
+```text
+event project meeting /from 2026-09-21 1400 /to 2026-09-21 1530 #school #team
+```
+
+## Managing tasks
+
+### Listing tasks
 
 Show all tasks:
 
@@ -52,71 +89,121 @@ Show all tasks:
 list
 ```
 
-Mark a task as done:
+Gnaix displays each task with its task number, completion status, task type,
+and any relevant dates, times, or tags.
+
+### Marking a task as done
+
+Use the task number shown by Gnaix:
 
 ```text
 mark 1
 ```
 
-Mark a task as not done:
+### Marking a task as not done
 
 ```text
 unmark 1
 ```
 
-Delete a task:
+### Deleting a task
 
 ```text
 delete 1
 ```
 
-Task numbers are the one-based numbers shown in the current list.
+Task numbers are one-based and correspond to the numbers shown in the current
+task list.
 
-## Searching
+## Searching for tasks
 
-Find tasks by keyword:
+### Searching by keyword
+
+Use `find` to search task descriptions:
 
 ```text
 find quiz
 ```
 
-Find tasks scheduled for a date:
+Gnaix displays matching tasks while preserving their original task numbers.
+
+### Searching by date
+
+Use `date` followed by a date in `yyyy-MM-dd` format:
 
 ```text
-date 2026-09-10
+date 2026-09-20
 ```
 
-Dates use `yyyy-MM-dd`.
+Gnaix displays deadlines and events occurring on that date.
 
-## Tags
+## Using tags
 
-Add tags by placing them at the end of a task command:
+Tags help you organise related tasks.
+
+A tag begins with `#` and can be placed at the end of a task command:
 
 ```text
-todo revise chapters #school #urgent
-deadline submit report /by 2026-09-20 #school
-event consultation /from 2026-09-21 1400 /to 2026-09-21 1430 #school
+todo revise chapters #school
 ```
 
-Search by one or more tags:
+Multiple tags are supported:
+
+```text
+todo prepare presentation #school #urgent
+```
+
+Tags are case-insensitive, and duplicate tags on the same task are stored only
+once.
+
+### Searching by one tag
 
 ```text
 tag #school
+```
+
+### Searching by multiple tags
+
+```text
 tag #school #urgent
 ```
 
-When multiple tags are supplied, Gnaix returns tasks that contain all of those
-tags. Tags are case-insensitive and duplicate tags are stored once.
+When multiple tags are supplied, Gnaix returns only tasks containing **all**
+of the specified tags.
 
-## Exiting
+For example, `tag #school #urgent` returns a task tagged with both `#school`
+and `#urgent`, but not a task containing only `#school`.
 
-Close the application with:
+## Saving tasks
+
+Gnaix saves your task list automatically whenever it changes.
+
+Your tasks are loaded again when Gnaix starts, so there is no separate save
+command.
+
+## Handling errors
+
+If a command is invalid, Gnaix displays an error message instead of terminating
+the application.
+
+For example, Gnaix handles:
+
+- unknown commands
+- missing task descriptions
+- invalid task numbers
+- task numbers that do not exist
+- malformed dates
+- malformed event times
+- malformed tags
+
+Read the error message and correct the command before trying again.
+
+## Exiting Gnaix
+
+Enter:
 
 ```text
 bye
 ```
 
-## Error handling
-
-Gnaix reports invalid commands, invalid task numbers, malformed dates, malformed
-event times, and malformed tags without crashing.
+You can also close the application window normally.
