@@ -35,7 +35,7 @@ class DeadlineTest {
                 LocalDate.of(2026, 9, 1));
 
         assertEquals(
-                "[D][ ] submit assignment (by: Sept 01 2026)",
+                "[D][ ] submit assignment (by: Sep 01 2026)",
                 deadline.toString());
     }
 
@@ -48,7 +48,7 @@ class DeadlineTest {
         deadline.markAsComplete();
 
         assertEquals(
-                "[D][X] submit assignment #school (by: Sept 01 2026)",
+                "[D][X] submit assignment #school (by: Sep 01 2026)",
                 deadline.toString());
     }
 }

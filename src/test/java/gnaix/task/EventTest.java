@@ -69,7 +69,7 @@ class EventTest {
                 LocalDateTime.of(2026, 9, 1, 16, 0));
 
         assertEquals(
-                "[E][ ] project meeting (from: Sept 01 2026 14:00 to: Sept 01 2026 16:00)",
+                "[E][ ] project meeting (from: Sep 01 2026 14:00 to: Sep 01 2026 16:00)",
                 event.toString());
     }
 
@@ -83,7 +83,7 @@ class EventTest {
         event.markAsComplete();
 
         assertEquals(
-                "[E][X] project meeting #school (from: Sept 01 2026 14:00 to: Sept 01 2026 16:00)",
+                "[E][X] project meeting #school (from: Sep 01 2026 14:00 to: Sep 01 2026 16:00)",
                 event.toString());
     }
 }

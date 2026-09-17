@@ -18,7 +18,7 @@ Examples:
 
     deadline submit CS2103T Quiz /by 2026-09-10 #school #urgent
 
-    event team meeting /from 2026-09-15 10:00 /to 2026-09-15 11:00 #school
+    event team meeting /from 2026-09-15 1000 /to 2026-09-15 1100 #school
 
 Tags may only appear at the end of the task command.
 
@@ -115,7 +115,7 @@ The original task numbers are preserved in tag search results.
 
 If no tasks match:
 
-    No tasks found with the specified tags :(
+    Nothing has all of those tags.
 
 ## Storage
 

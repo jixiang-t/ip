@@ -3,13 +3,14 @@ package gnaix.task;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Represents a task that occurs over a specified time period.
  */
 public class Event extends Task {
     private static final DateTimeFormatter OUTPUT_DATE_TIME_FORMAT =
-            DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm");
+            DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm", Locale.ENGLISH);
     private LocalDateTime from;
     private LocalDateTime to;
 
