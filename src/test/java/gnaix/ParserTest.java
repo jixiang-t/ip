@@ -31,6 +31,33 @@ class ParserTest {
     }
 
     @Test
+    void parse_uppercaseTodoCommand_todoCreated() {
+        ParsedCommand result = Parser.parse("TODO buy milk");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.TODO, result.getCommand());
+        assertEquals("buy milk", result.getTask().getDescription());
+    }
+
+    @Test
+    void parse_leadingTrailingWhitespace_commandParsed() {
+        ParsedCommand result = Parser.parse("  todo buy milk  ");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.TODO, result.getCommand());
+        assertEquals("buy milk", result.getTask().getDescription());
+    }
+
+    @Test
+    void parse_repeatedSpaces_commandParsed() {
+        ParsedCommand result = Parser.parse("mark     3");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.MARK, result.getCommand());
+        assertEquals(3, result.getIndex());
+    }
+
+    @Test
     void parse_validDeadlineCommand_deadlineCreated() {
         ParsedCommand result = Parser.parse(
                 "deadline return book /by 2026-09-01");
@@ -89,12 +116,39 @@ class ParserTest {
     }
 
     @Test
+    void parse_validByeCommand_byeReturned() {
+        ParsedCommand result = Parser.parse("bye");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.BYE, result.getCommand());
+        assertNull(result.getTask());
+    }
+
+    @Test
     void parse_validIndexCommand_indexParsed() {
         ParsedCommand result = Parser.parse("mark 3");
 
         assertFalse(result.hasError());
         assertEquals(Command.MARK, result.getCommand());
         assertEquals(3, result.getIndex());
+    }
+
+    @Test
+    void parse_validDeleteCommand_indexParsed() {
+        ParsedCommand result = Parser.parse("delete 2");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.DELETE, result.getCommand());
+        assertEquals(2, result.getIndex());
+    }
+
+    @Test
+    void parse_validUnmarkCommand_indexParsed() {
+        ParsedCommand result = Parser.parse("unmark 1");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.UNMARK, result.getCommand());
+        assertEquals(1, result.getIndex());
     }
 
     @Test
@@ -143,6 +197,26 @@ class ParserTest {
     }
 
     @Test
+    void parseDeadline_emptyDescription_errorReturned() {
+        ParsedCommand result = Parser.parse("deadline /by 2026-09-01");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "That deadline needs a description and a /by date.",
+                result.getError());
+    }
+
+    @Test
+    void parseDeadline_emptyDate_errorReturned() {
+        ParsedCommand result = Parser.parse("deadline return book /by");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "That deadline needs a description and a /by date.",
+                result.getError());
+    }
+
+    @Test
     void parseDeadline_invalidDate_errorReturned() {
         ParsedCommand result = Parser.parse(
                 "deadline return book /by 2026-99-99");
@@ -170,6 +244,39 @@ class ParserTest {
     void parseEvent_missingToTime_errorReturned() {
         ParsedCommand result = Parser.parse(
                 "event project meeting /from 2026-09-01 1400");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "That event needs a description, /from time, and /to time.",
+                result.getError());
+    }
+
+    @Test
+    void parseEvent_emptyDescription_errorReturned() {
+        ParsedCommand result = Parser.parse(
+                "event /from 2026-09-01 1400 /to 2026-09-01 1600");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "That event needs a description, /from time, and /to time.",
+                result.getError());
+    }
+
+    @Test
+    void parseEvent_emptyFromTime_errorReturned() {
+        ParsedCommand result = Parser.parse(
+                "event project meeting /from /to 2026-09-01 1600");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "That event needs a description, /from time, and /to time.",
+                result.getError());
+    }
+
+    @Test
+    void parseEvent_emptyToTime_errorReturned() {
+        ParsedCommand result = Parser.parse(
+                "event project meeting /from 2026-09-01 1400 /to");
 
         assertTrue(result.hasError());
         assertEquals(
@@ -380,6 +487,11 @@ class ParserTest {
         ParsedCommand result = Parser.parse("tag school");
 
         assertTrue(result.hasError());
+        assertEquals(
+                "That tag format won't work."
+                        + System.lineSeparator()
+                        + "Try something like #school.",
+                result.getError());
     }
 
     @Test
@@ -387,6 +499,23 @@ class ParserTest {
         ParsedCommand result = Parser.parse("tag #");
 
         assertTrue(result.hasError());
+        assertEquals(
+                "That tag format won't work."
+                        + System.lineSeparator()
+                        + "Try something like #school.",
+                result.getError());
+    }
+
+    @Test
+    void parseTag_invalidCharacters_errorReturned() {
+        ParsedCommand result = Parser.parse("tag #school!");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "That tag format won't work."
+                        + System.lineSeparator()
+                        + "Try something like #school.",
+                result.getError());
     }
 
     @Test
@@ -394,5 +523,10 @@ class ParserTest {
         ParsedCommand result = Parser.parse("tag");
 
         assertTrue(result.hasError());
+        assertEquals(
+                "That tag format won't work."
+                        + System.lineSeparator()
+                        + "Try something like #school.",
+                result.getError());
     }
 }

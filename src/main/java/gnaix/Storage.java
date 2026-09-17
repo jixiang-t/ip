@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class Storage {
 
             try {
                 tasks.add(parseTask(line));
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException | DateTimeParseException e) {
                 System.out.println("Some stored task data could not be loaded.");
             }
         }

@@ -2,8 +2,10 @@ package gnaix.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,26 @@ public class TaskTagTest {
 
         task.addTag("#school");
 
+        assertEquals(List.of("school"), List.copyOf(task.getTags()));
+    }
+
+    @Test
+    public void addTag_withoutHash_tagStored() {
+        Task task = new Task("study CS2103T");
+
+        task.addTag("school");
+
+        assertTrue(task.hasTag("#school"));
+        assertEquals(List.of("school"), List.copyOf(task.getTags()));
+    }
+
+    @Test
+    public void addTag_surroundingWhitespace_tagTrimmed() {
+        Task task = new Task("study CS2103T");
+
+        task.addTag("  #school  ");
+
+        assertTrue(task.hasTag("school"));
         assertEquals(List.of("school"), List.copyOf(task.getTags()));
     }
 
@@ -40,6 +62,14 @@ public class TaskTagTest {
         task.addTag("#School");
 
         assertEquals(1, task.getTags().size());
+    }
+
+    @Test
+    public void getTags_modifyReturnedSet_exceptionThrown() {
+        Task task = new Task("study CS2103T");
+        task.addTag("#school");
+
+        assertThrows(UnsupportedOperationException.class, () -> task.getTags().add("urgent"));
     }
 
     @Test
@@ -70,5 +100,33 @@ public class TaskTagTest {
         assertEquals(
                 "[ ] study CS2103T",
                 task.toString());
+    }
+
+    @Test
+    public void markAsComplete_uncompletedTask_taskCompleted() {
+        Task task = new Task("study CS2103T");
+
+        task.markAsComplete();
+
+        assertTrue(task.isCompleted());
+        assertEquals("[X] study CS2103T", task.toString());
+    }
+
+    @Test
+    public void markAsIncomplete_completedTask_taskUncompleted() {
+        Task task = new Task("study CS2103T");
+
+        task.markAsComplete();
+        task.markAsIncomplete();
+
+        assertFalse(task.isCompleted());
+        assertEquals("[ ] study CS2103T", task.toString());
+    }
+
+    @Test
+    public void occursOn_genericTask_falseReturned() {
+        Task task = new Task("study CS2103T");
+
+        assertFalse(task.occursOn(LocalDate.of(2026, 9, 1)));
     }
 }
