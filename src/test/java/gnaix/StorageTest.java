@@ -420,6 +420,53 @@ class StorageTest {
     }
 
     @Test
+    void load_invalidDeadlineDate_recordIgnored(@TempDir Path tempDir)
+            throws Exception {
+        Path filePath = tempDir.resolve("tasks.txt");
+        Files.writeString(
+                filePath,
+                "D | 0 | submit quiz | not-a-date" + System.lineSeparator(),
+                StandardCharsets.UTF_8);
+        Storage storage = new Storage(filePath);
+
+        ArrayList<Task> loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+    }
+
+    @Test
+    void load_missingEventField_recordIgnored(@TempDir Path tempDir)
+            throws Exception {
+        Path filePath = tempDir.resolve("tasks.txt");
+        Files.writeString(
+                filePath,
+                "E | 0 | workshop | 2026-09-10T09:00"
+                        + System.lineSeparator(),
+                StandardCharsets.UTF_8);
+        Storage storage = new Storage(filePath);
+
+        ArrayList<Task> loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+    }
+
+    @Test
+    void load_invalidEventTime_recordIgnored(@TempDir Path tempDir)
+            throws Exception {
+        Path filePath = tempDir.resolve("tasks.txt");
+        Files.writeString(
+                filePath,
+                "E | 0 | workshop | not-a-time | 2026-09-10T11:00"
+                        + System.lineSeparator(),
+                StandardCharsets.UTF_8);
+        Storage storage = new Storage(filePath);
+
+        ArrayList<Task> loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+    }
+
+    @Test
     void load_corruptedRecord_validRecordsStillLoaded(@TempDir Path tempDir)
             throws Exception {
         Path filePath = tempDir.resolve("tasks.txt");

@@ -37,8 +37,17 @@ public class Gnaix {
      * Creates a Gnaix application using the default storage file.
      */
     public Gnaix() {
+        this(new Storage(FILE_PATH));
+    }
+
+    /**
+     * Creates a Gnaix application using the specified storage.
+     *
+     * @param storage Storage used to load and save tasks.
+     */
+    Gnaix(Storage storage) {
         this.ui = new Ui();
-        this.storage = new Storage(FILE_PATH);
+        this.storage = storage;
 
         try {
             this.tasks = new TaskList(storage.load());
