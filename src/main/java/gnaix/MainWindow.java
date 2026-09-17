@@ -3,7 +3,6 @@ package gnaix;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -39,9 +38,6 @@ public class MainWindow extends AnchorPane {
     @FXML
     private ImageView headerImage;
 
-    @FXML
-    private Label headerBanner;
-
     private Gnaix gnaix;
 
     /**
@@ -58,22 +54,13 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     public void initialize() {
-        String banner = """
-  ____ _   _    _    _____  __
- / ___| \\ | |  / \\  |_ _\\ \\/ /
-| |  _|  \\| | / _ \\  | | \\  /
-| |_| | |\\  |/ ___ \\ | | /  \\
- \\____|_| \\_/_/   \\_\\___/_/\\_\\
-            """;
-
         headerImage.setImage(gnaixImage);
-        headerBanner.setText(banner);
 
         dialogContainer.heightProperty().addListener(observable -> scrollToBottom());
         scrollPane.addEventFilter(ScrollEvent.SCROLL, this::handleScroll);
 
         addDialogBoxes(DialogBox.getGnaixDialog(
-                "Hello! I'm Gnaix\nWhat can I do for you?",
+                "Hello. I'm Gnaix.\nWhat do you need?",
                 gnaixImage));
         userInput.requestFocus();
     }

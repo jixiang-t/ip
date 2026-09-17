@@ -33,20 +33,31 @@ public class TaskCard extends HBox {
         Task task = taskDisplay.getTask();
 
         getStyleClass().add("task-card");
-        setAlignment(Pos.TOP_LEFT);
+        if (task.isCompleted()) {
+            getStyleClass().add("task-card-completed");
+        }
         setMaxWidth(Double.MAX_VALUE);
 
-        VBox identity = new VBox();
+        HBox summary = new HBox();
+        summary.getStyleClass().add("task-summary");
+        summary.setAlignment(Pos.TOP_LEFT);
+        summary.setMaxWidth(Double.MAX_VALUE);
+
+        HBox identity = new HBox();
         identity.getStyleClass().add("task-identity");
+        identity.setAlignment(Pos.CENTER_LEFT);
 
         Label number = new Label(String.valueOf(taskDisplay.getNumber()));
         number.getStyleClass().add("task-number");
 
         Label type = new Label(getTaskType(task));
-        type.getStyleClass().add("task-type");
+        type.getStyleClass().addAll("task-type", getTaskTypeStyle(task));
 
         Label status = new Label(task.isCompleted() ? "\u2611" : "\u2610");
         status.getStyleClass().add("task-status");
+        status.getStyleClass().add(task.isCompleted()
+                ? "task-status-completed"
+                : "task-status-open");
 
         VBox details = new VBox();
         details.getStyleClass().add("task-details");
@@ -56,14 +67,16 @@ public class TaskCard extends HBox {
         Label description = new Label(task.getDescription());
         description.getStyleClass().add("task-description");
         description.setWrapText(true);
-        description.maxWidthProperty().bind(details.widthProperty());
+        description.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(description, Priority.ALWAYS);
 
-        details.getChildren().add(description);
+        identity.getChildren().addAll(number, type);
+        summary.getChildren().addAll(identity, status, description);
+        details.getChildren().add(summary);
         addMetadata(task, details);
         addTags(task, details);
 
-        identity.getChildren().addAll(number, type);
-        getChildren().addAll(identity, status, details);
+        getChildren().add(details);
     }
 
     /**
@@ -82,6 +95,7 @@ public class TaskCard extends HBox {
         Label metadataLabel = new Label(metadata);
         metadataLabel.getStyleClass().add("task-metadata");
         metadataLabel.setWrapText(false);
+        metadataLabel.setMaxWidth(Double.MAX_VALUE);
         details.getChildren().add(metadataLabel);
     }
 
@@ -129,21 +143,39 @@ public class TaskCard extends HBox {
     }
 
     /**
-     * Returns the task type initial used beside each task card.
+     * Returns the compact task type label used beside each task card.
      *
      * @param task Task being displayed.
-     * @return T, D, or E depending on the task type.
+     * @return TODO, DEADLINE, or EVENT depending on the task type.
      */
     private String getTaskType(Task task) {
         if (task instanceof Deadline) {
-            return "D";
+            return "DEADLINE";
         }
 
         if (task instanceof Event) {
-            return "E";
+            return "EVENT";
         }
 
-        return "T";
+        return "TODO";
+    }
+
+    /**
+     * Returns the CSS class that gives each task type its visual accent.
+     *
+     * @param task Task being displayed.
+     * @return Style class for the task type chip.
+     */
+    private String getTaskTypeStyle(Task task) {
+        if (task instanceof Deadline) {
+            return "task-type-deadline";
+        }
+
+        if (task instanceof Event) {
+            return "task-type-event";
+        }
+
+        return "task-type-todo";
     }
 
     /**

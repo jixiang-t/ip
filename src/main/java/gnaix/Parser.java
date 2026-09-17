@@ -31,6 +31,27 @@ public class Parser {
     private static final Pattern TAG_PATTERN =
             Pattern.compile("#[A-Za-z0-9_-]+");
 
+    private static final String INVALID_COMMAND_MESSAGE =
+            "I don't know what that means."
+                    + System.lineSeparator()
+                    + "Try a valid command.";
+    private static final String INVALID_TASK_INDEX_MESSAGE =
+            "Which task?"
+                    + System.lineSeparator()
+                    + "You'll need to give me a task number.";
+    private static final String INVALID_DATE_MESSAGE =
+            "That date doesn't work."
+                    + System.lineSeparator()
+                    + "Use yyyy-MM-dd.";
+    private static final String INVALID_EVENT_TIME_MESSAGE =
+            "That date doesn't work."
+                    + System.lineSeparator()
+                    + "Use yyyy-MM-dd HHmm.";
+    private static final String INVALID_TAG_MESSAGE =
+            "That tag format won't work."
+                    + System.lineSeparator()
+                    + "Try something like #school.";
+
     /**
      * Parses a full user command into a structured result.
      *
@@ -40,7 +61,7 @@ public class Parser {
     public static ParsedCommand parse(String fullCommand) {
         String trimmed = fullCommand.trim();
         if (trimmed.isEmpty()) {
-            return ParsedCommand.error("Please enter a command! :(");
+            return ParsedCommand.error("You'll need to type a command.");
         }
 
         String[] parts = trimmed.split("\\s+", 2);
@@ -68,7 +89,7 @@ public class Parser {
             case TAG:
                 return parseTagSearch(args);
             default:
-                return ParsedCommand.error("That's not a valid command! :(");
+                return ParsedCommand.error(INVALID_COMMAND_MESSAGE);
         }
     }
 
@@ -83,7 +104,7 @@ public class Parser {
         try {
             return ParsedCommand.forIndex(command, Integer.parseInt(args.trim()));
         } catch (NumberFormatException e) {
-            return ParsedCommand.error("That task number is not a number! :(");
+            return ParsedCommand.error(INVALID_TASK_INDEX_MESSAGE);
         }
     }
 
@@ -97,7 +118,7 @@ public class Parser {
         TaggedText taggedText = extractTrailingTags(args);
 
         if (taggedText.text().isEmpty()) {
-            return ParsedCommand.error("NO DESCRIPTION GIVEN! :(");
+            return ParsedCommand.error("That task needs a description.");
         }
 
         Todo todo = new Todo(taggedText.text());
@@ -118,7 +139,7 @@ public class Parser {
 
         if (segments.length < 2) {
             return ParsedCommand.error(
-                    "A deadline needs a description and a /by date! :(");
+                    "That deadline needs a description and a /by date.");
         }
 
         String info = segments[0].trim();
@@ -126,7 +147,7 @@ public class Parser {
 
         if (info.isEmpty() || by.isEmpty()) {
             return ParsedCommand.error(
-                    "A deadline needs a description and a /by date! :(");
+                    "That deadline needs a description and a /by date.");
         }
 
         try {
@@ -136,8 +157,7 @@ public class Parser {
 
             return ParsedCommand.forTask(Command.DEADLINE, deadline);
         } catch (DateTimeParseException e) {
-            return ParsedCommand.error(
-                    "Please enter the deadline as yyyy-MM-dd! :(");
+            return ParsedCommand.error(INVALID_DATE_MESSAGE);
         }
     }
 
@@ -152,7 +172,8 @@ public class Parser {
         String[] parts = taggedText.text().split(" /from ", 2);
 
         if (parts.length < 2) {
-            return ParsedCommand.error("Not enough info given! :(");
+            return ParsedCommand.error(
+                    "That event needs a description, /from time, and /to time.");
         }
 
         String info = parts[0].trim();
@@ -160,7 +181,7 @@ public class Parser {
 
         if (info.isEmpty() || times.length < 2) {
             return ParsedCommand.error(
-                    "An event needs a description and timings! :(");
+                    "That event needs a description, /from time, and /to time.");
         }
 
         String from = times[0].trim();
@@ -168,7 +189,7 @@ public class Parser {
 
         if (from.isEmpty() || to.isEmpty()) {
             return ParsedCommand.error(
-                    "An event needs a /from time, and /to time! :(");
+                    "That event needs a /from time and /to time.");
         }
 
         try {
@@ -182,8 +203,7 @@ public class Parser {
 
             return ParsedCommand.forTask(Command.EVENT, event);
         } catch (DateTimeParseException e) {
-            return ParsedCommand.error(
-                    "Please enter event times as yyyy-MM-dd HHmm! :(");
+            return ParsedCommand.error(INVALID_EVENT_TIME_MESSAGE);
         }
     }
 
@@ -195,16 +215,14 @@ public class Parser {
      */
     private static ParsedCommand parseDate(String args) {
         if (args.isEmpty()) {
-            return ParsedCommand.error(
-                    "Please provide a date in yyyy-MM-dd format! :(");
+            return ParsedCommand.error(INVALID_DATE_MESSAGE);
         }
 
         try {
             return ParsedCommand.forDate(
                     LocalDate.parse(args, INPUT_DATE_FORMAT));
         } catch (DateTimeParseException e) {
-            return ParsedCommand.error(
-                    "Please enter the date as yyyy-MM-dd! :(");
+            return ParsedCommand.error(INVALID_DATE_MESSAGE);
         }
     }
 
@@ -217,7 +235,7 @@ public class Parser {
     private static ParsedCommand parseFind(String args) {
         if (args.isEmpty()) {
             return ParsedCommand.error(
-                    "Please provide a keyword to search for! :(");
+                    "Search for what? Give me a keyword.");
         }
 
         return ParsedCommand.forKeyword(args);
@@ -231,8 +249,7 @@ public class Parser {
      */
     private static ParsedCommand parseTagSearch(String args) {
         if (args.isEmpty()) {
-            return ParsedCommand.error(
-                    "Please provide at least one tag to search for! :(");
+            return ParsedCommand.error(INVALID_TAG_MESSAGE);
         }
 
         String[] tokens = args.split("\\s+");
@@ -240,9 +257,7 @@ public class Parser {
 
         for (String token : tokens) {
             if (!TAG_PATTERN.matcher(token).matches()) {
-                return ParsedCommand.error(
-                        "Tags must start with # and contain only "
-                                + "letters, digits, _ or -! :(");
+                return ParsedCommand.error(INVALID_TAG_MESSAGE);
             }
 
             tags.add(normaliseTag(token));

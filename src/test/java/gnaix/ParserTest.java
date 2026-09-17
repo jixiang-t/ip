@@ -104,7 +104,7 @@ class ParserTest {
         assertTrue(result.hasError());
         assertEquals(Command.UNKNOWN, result.getCommand());
         assertEquals(
-                "Please enter a command! :(",
+                "You'll need to type a command.",
                 result.getError());
     }
 
@@ -115,7 +115,9 @@ class ParserTest {
         assertTrue(result.hasError());
         assertEquals(Command.UNKNOWN, result.getCommand());
         assertEquals(
-                "That's not a valid command! :(",
+                "I don't know what that means."
+                        + System.lineSeparator()
+                        + "Try a valid command.",
                 result.getError());
         assertNull(result.getTask());
     }
@@ -126,7 +128,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "NO DESCRIPTION GIVEN! :(",
+                "That task needs a description.",
                 result.getError());
     }
 
@@ -136,7 +138,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "A deadline needs a description and a /by date! :(",
+                "That deadline needs a description and a /by date.",
                 result.getError());
     }
 
@@ -147,7 +149,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Please enter the deadline as yyyy-MM-dd! :(",
+                "That date doesn't work."
+                        + System.lineSeparator()
+                        + "Use yyyy-MM-dd.",
                 result.getError());
     }
 
@@ -158,7 +162,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Not enough info given! :(",
+                "That event needs a description, /from time, and /to time.",
                 result.getError());
     }
 
@@ -169,7 +173,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "An event needs a description and timings! :(",
+                "That event needs a description, /from time, and /to time.",
                 result.getError());
     }
 
@@ -181,7 +185,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Please enter event times as yyyy-MM-dd HHmm! :(",
+                "That date doesn't work."
+                        + System.lineSeparator()
+                        + "Use yyyy-MM-dd HHmm.",
                 result.getError());
     }
 
@@ -191,7 +197,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Please enter the date as yyyy-MM-dd! :(",
+                "That date doesn't work."
+                        + System.lineSeparator()
+                        + "Use yyyy-MM-dd.",
                 result.getError());
     }
 
@@ -201,7 +209,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "That task number is not a number! :(",
+                "Which task?"
+                        + System.lineSeparator()
+                        + "You'll need to give me a task number.",
                 result.getError());
     }
 
@@ -211,7 +221,9 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "That task number is not a number! :(",
+                "Which task?"
+                        + System.lineSeparator()
+                        + "You'll need to give me a task number.",
                 result.getError());
     }
 
@@ -230,7 +242,7 @@ class ParserTest {
 
         assertTrue(result.hasError());
         assertEquals(
-                "Please provide a keyword to search for! :(",
+                "Search for what? Give me a keyword.",
                 result.getError());
     }
 

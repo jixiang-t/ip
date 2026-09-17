@@ -21,27 +21,38 @@
 
         <!-- Header -->
         <HBox alignment="CENTER_LEFT"
-              prefHeight="100.0"
-              spacing="12.0"
+              prefHeight="72.0"
+              spacing="10.0"
               styleClass="header"
               AnchorPane.leftAnchor="0.0"
               AnchorPane.rightAnchor="0.0"
               AnchorPane.topAnchor="0.0">
 
             <padding>
-                <Insets bottom="10.0"
-                        left="15.0"
-                        right="15.0"
-                        top="10.0" />
+                <Insets bottom="9.0"
+                        left="14.0"
+                        right="14.0"
+                        top="9.0" />
             </padding>
 
             <ImageView fx:id="headerImage"
-                       fitHeight="48.0"
-                       fitWidth="48.0"
+                       fitHeight="38.0"
+                       fitWidth="38.0"
                        preserveRatio="true" />
 
-            <Label fx:id="headerBanner"
-                   styleClass="header-banner" />
+            <VBox alignment="CENTER_LEFT"
+                  spacing="1.0"
+                  styleClass="header-copy">
+
+                <children>
+                    <Label styleClass="header-title"
+                           text="GNAIX" />
+
+                    <Label styleClass="header-subtitle"
+                           text="At your service. Unfortunately." />
+                </children>
+
+            </VBox>
 
         </HBox>
 
@@ -49,7 +60,7 @@
         <ScrollPane fx:id="scrollPane"
                     fitToWidth="true"
                     hbarPolicy="NEVER"
-                    AnchorPane.topAnchor="100.0"
+                    AnchorPane.topAnchor="72.0"
                     AnchorPane.bottomAnchor="50.0"
                     AnchorPane.leftAnchor="0.0"
                     AnchorPane.rightAnchor="0.0">

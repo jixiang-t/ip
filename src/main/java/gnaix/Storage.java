@@ -88,7 +88,7 @@ public class Storage {
             try {
                 tasks.add(parseTask(line));
             } catch (IllegalArgumentException e) {
-                System.out.println("corrupted task data :(");
+                System.out.println("Some stored task data could not be loaded.");
             }
         }
 
@@ -131,7 +131,7 @@ public class Storage {
         }
 
         if (fields.length < TODO_FIELD_COUNT) {
-            throw new IllegalArgumentException("Invalid task format :(");
+            throw new IllegalArgumentException("Invalid task format");
         }
 
         return fields;
@@ -148,7 +148,7 @@ public class Storage {
         String completionStatus = fields[1];
 
         if (!completionStatus.equals("0") && !completionStatus.equals("1")) {
-            throw new IllegalArgumentException("Invalid completion status :(");
+            throw new IllegalArgumentException("Invalid completion status");
         }
 
         return completionStatus.equals("1");
