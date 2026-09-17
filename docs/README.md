@@ -206,4 +206,16 @@ Enter:
 bye
 ```
 
+## Quick start
+
+For a first-time demonstration of Gnaix, try:
+
+```text
+todo prepare tutorial worksheet #school #project
+deadline submit report /by 2026-09-20 #school #urgent
+event team meeting /from 2026-09-18 1400 /to 2026-09-18 1530 #team #project
+list
+tag #school
+```
+
 You can also close the application window normally.
