@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -274,7 +276,7 @@ public class Parser {
      */
     private static TaggedText extractTrailingTags(String args) {
         String remaining = args.trim();
-        Set<String> tags = new LinkedHashSet<>();
+        Deque<String> tags = new ArrayDeque<>();
 
         while (!remaining.isEmpty()) {
             Matcher matcher = TRAILING_TAG_PATTERN.matcher(remaining);
@@ -283,11 +285,11 @@ public class Parser {
                 break;
             }
 
-            tags.add(normaliseTag(matcher.group(1)));
+            tags.addFirst(normaliseTag(matcher.group(1)));
             remaining = remaining.substring(0, matcher.start()).trim();
         }
 
-        return new TaggedText(remaining, tags);
+        return new TaggedText(remaining, new LinkedHashSet<>(tags));
     }
 
     /**

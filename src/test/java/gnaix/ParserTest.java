@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -367,7 +368,7 @@ class ParserTest {
     }
 
     @Test
-    void parseTodo_multipleTags_tagsExtracted() {
+    void parseTodo_multipleTags_inputOrderPreserved() {
         ParsedCommand result =
                 Parser.parse("todo study CS2103T #school #urgent");
 
@@ -376,20 +377,31 @@ class ParserTest {
                 "study CS2103T",
                 result.getTask().getDescription());
         assertEquals(
-                Set.of("school", "urgent"),
-                result.getTask().getTags());
+                List.of("school", "urgent"),
+                List.copyOf(result.getTask().getTags()));
     }
 
     @Test
-    void parseTodo_duplicateTags_storedOnce() {
+    void parseTodo_duplicateTags_firstOccurrenceOrderPreserved() {
         ParsedCommand result =
-                Parser.parse("todo study CS2103T #school #School");
+                Parser.parse(
+                        "todo study CS2103T #school #urgent #School");
 
         assertFalse(result.hasError());
-        assertEquals(1, result.getTask().getTags().size());
         assertEquals(
-                Set.of("school"),
-                result.getTask().getTags());
+                List.of("school", "urgent"),
+                List.copyOf(result.getTask().getTags()));
+    }
+
+    @Test
+    void parseTodo_mixedCaseTags_orderPreservedAfterNormalisation() {
+        ParsedCommand result =
+                Parser.parse("todo study CS2103T #School #URGENT");
+
+        assertFalse(result.hasError());
+        assertEquals(
+                List.of("school", "urgent"),
+                List.copyOf(result.getTask().getTags()));
     }
 
     @Test
