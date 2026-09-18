@@ -49,6 +49,8 @@ public class Parser {
             "That date doesn't work."
                     + System.lineSeparator()
                     + "Use yyyy-MM-dd HHmm.";
+
+    /** Message shown when an event ends before it starts. */
     private static final String INVALID_EVENT_RANGE_MESSAGE =
             "That event's end time is before its start time."
                     + System.lineSeparator()
@@ -169,9 +171,11 @@ public class Parser {
 
     /**
      * Parses an event task from the supplied arguments.
+     * The end time may equal the start time but must not precede it.
      *
      * @param args User-supplied event description, timings, and optional tags.
-     * @return Parsed command containing the event task or an error.
+     * @return Parsed command containing the event task, or an error if its
+     *         required fields, date-times, or time range are invalid.
      */
     private static ParsedCommand parseEvent(String args) {
         TaggedText taggedText = extractTrailingTags(args);
