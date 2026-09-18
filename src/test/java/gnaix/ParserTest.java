@@ -300,6 +300,37 @@ class ParserTest {
     }
 
     @Test
+    void parseEvent_endBeforeStart_errorReturned() {
+        ParsedCommand result = Parser.parse(
+                "event project meeting /from 2026-09-01 1600 "
+                        + "/to 2026-09-01 1400");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "That event's end time is before its start time."
+                        + System.lineSeparator()
+                        + "Use an end time at or after its start time.",
+                result.getError());
+    }
+
+    @Test
+    void parseEvent_sameStartAndEnd_eventCreated() {
+        ParsedCommand result = Parser.parse(
+                "event project meeting /from 2026-09-01 1400 "
+                        + "/to 2026-09-01 1400");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.EVENT, result.getCommand());
+        Event event = (Event) result.getTask();
+        assertEquals(
+                LocalDateTime.of(2026, 9, 1, 14, 0),
+                event.getFrom());
+        assertEquals(
+                LocalDateTime.of(2026, 9, 1, 14, 0),
+                event.getTo());
+    }
+
+    @Test
     void parseDate_invalidDate_errorReturned() {
         ParsedCommand result = Parser.parse("date 2026-99-99");
 

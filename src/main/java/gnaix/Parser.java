@@ -49,6 +49,10 @@ public class Parser {
             "That date doesn't work."
                     + System.lineSeparator()
                     + "Use yyyy-MM-dd HHmm.";
+    private static final String INVALID_EVENT_RANGE_MESSAGE =
+            "That event's end time is before its start time."
+                    + System.lineSeparator()
+                    + "Use an end time at or after its start time.";
     private static final String INVALID_TAG_MESSAGE =
             "That tag format won't work."
                     + System.lineSeparator()
@@ -199,6 +203,10 @@ public class Parser {
                     LocalDateTime.parse(from, INPUT_DATE_TIME_FORMAT);
             LocalDateTime toDateTime =
                     LocalDateTime.parse(to, INPUT_DATE_TIME_FORMAT);
+
+            if (toDateTime.isBefore(fromDateTime)) {
+                return ParsedCommand.error(INVALID_EVENT_RANGE_MESSAGE);
+            }
 
             Event event = new Event(info, fromDateTime, toDateTime);
             addTags(event, taggedText.tags());
