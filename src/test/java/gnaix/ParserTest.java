@@ -126,6 +126,30 @@ class ParserTest {
     }
 
     @Test
+    void parseBye_trailingArguments_errorReturned() {
+        ParsedCommand result = Parser.parse("bye later");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "The bye command doesn't take arguments."
+                        + System.lineSeparator()
+                        + "Try bye on its own.",
+                result.getError());
+    }
+
+    @Test
+    void parseList_trailingArguments_errorReturned() {
+        ParsedCommand result = Parser.parse("list tasks");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "The list command doesn't take arguments."
+                        + System.lineSeparator()
+                        + "Try list on its own.",
+                result.getError());
+    }
+
+    @Test
     void parse_validIndexCommand_indexParsed() {
         ParsedCommand result = Parser.parse("mark 3");
 

@@ -79,7 +79,7 @@ public class Parser {
         switch (command) {
             case BYE:
             case LIST:
-                return ParsedCommand.of(command);
+                return parseNoArgumentCommand(command, args);
             case MARK:
             case UNMARK:
             case DELETE:
@@ -99,6 +99,27 @@ public class Parser {
             default:
                 return ParsedCommand.error(INVALID_COMMAND_MESSAGE);
         }
+    }
+
+    /**
+     * Parses a command that does not accept arguments.
+     *
+     * @param command Command that must be entered on its own.
+     * @param args Text supplied after the command word.
+     * @return Parsed command, or an error if arguments were supplied.
+     */
+    private static ParsedCommand parseNoArgumentCommand(
+            Command command, String args) {
+        if (!args.isEmpty()) {
+            String commandWord = command.name().toLowerCase(Locale.ROOT);
+
+            return ParsedCommand.error(
+                    "The " + commandWord + " command doesn't take arguments."
+                            + System.lineSeparator()
+                            + "Try " + commandWord + " on its own.");
+        }
+
+        return ParsedCommand.of(command);
     }
 
     /**
