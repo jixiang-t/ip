@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
@@ -67,6 +68,26 @@ class GnaixBusinessLogicTest {
         assertFalse(response.isError());
         assertFalse(response.hasTasks());
         assertEquals("Nothing matched that search.", response.getText());
+    }
+
+    @Test
+    void getGuiResponse_turkishLocale_caseInsensitiveFindReturned()
+            throws Exception {
+        Locale originalLocale = Locale.getDefault();
+
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+            Todo todo = new Todo("INDIGO report");
+            Gnaix gnaix = createGnaixWithTasks(todo);
+
+            GuiResponse response = gnaix.getGuiResponse("find indigo");
+
+            assertFalse(response.isError());
+            assertEquals(1, response.getTasks().size());
+            assertSame(todo, response.getTasks().get(0).getTask());
+        } finally {
+            Locale.setDefault(originalLocale);
+        }
     }
 
     @Test

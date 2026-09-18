@@ -1,5 +1,7 @@
 package gnaix;
 
+import java.util.Locale;
+
 /**
  * Represents the commands supported by Gnaix.
  */
@@ -25,7 +27,7 @@ public enum Command {
      */
     public static Command fromString(String input) {
         try {
-            return Command.valueOf(input.toUpperCase());
+            return Command.valueOf(input.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             return UNKNOWN;
         }
