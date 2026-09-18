@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -47,6 +49,12 @@ public class Parser {
             "That date doesn't work."
                     + System.lineSeparator()
                     + "Use yyyy-MM-dd HHmm.";
+
+    /** Message shown when an event ends before it starts. */
+    private static final String INVALID_EVENT_RANGE_MESSAGE =
+            "That event's end time is before its start time."
+                    + System.lineSeparator()
+                    + "Use an end time at or after its start time.";
     private static final String INVALID_TAG_MESSAGE =
             "That tag format won't work."
                     + System.lineSeparator()
@@ -71,7 +79,7 @@ public class Parser {
         switch (command) {
             case BYE:
             case LIST:
-                return ParsedCommand.of(command);
+                return parseNoArgumentCommand(command, args);
             case MARK:
             case UNMARK:
             case DELETE:
@@ -91,6 +99,27 @@ public class Parser {
             default:
                 return ParsedCommand.error(INVALID_COMMAND_MESSAGE);
         }
+    }
+
+    /**
+     * Parses a command that does not accept arguments.
+     *
+     * @param command Command that must be entered on its own.
+     * @param args Text supplied after the command word.
+     * @return Parsed command, or an error if arguments were supplied.
+     */
+    private static ParsedCommand parseNoArgumentCommand(
+            Command command, String args) {
+        if (!args.isEmpty()) {
+            String commandWord = command.name().toLowerCase(Locale.ROOT);
+
+            return ParsedCommand.error(
+                    "The " + commandWord + " command doesn't take arguments."
+                            + System.lineSeparator()
+                            + "Try " + commandWord + " on its own.");
+        }
+
+        return ParsedCommand.of(command);
     }
 
     /**
@@ -163,9 +192,11 @@ public class Parser {
 
     /**
      * Parses an event task from the supplied arguments.
+     * The end time may equal the start time but must not precede it.
      *
      * @param args User-supplied event description, timings, and optional tags.
-     * @return Parsed command containing the event task or an error.
+     * @return Parsed command containing the event task, or an error if its
+     *         required fields, date-times, or time range are invalid.
      */
     private static ParsedCommand parseEvent(String args) {
         TaggedText taggedText = extractTrailingTags(args);
@@ -197,6 +228,10 @@ public class Parser {
                     LocalDateTime.parse(from, INPUT_DATE_TIME_FORMAT);
             LocalDateTime toDateTime =
                     LocalDateTime.parse(to, INPUT_DATE_TIME_FORMAT);
+
+            if (toDateTime.isBefore(fromDateTime)) {
+                return ParsedCommand.error(INVALID_EVENT_RANGE_MESSAGE);
+            }
 
             Event event = new Event(info, fromDateTime, toDateTime);
             addTags(event, taggedText.tags());
@@ -274,7 +309,7 @@ public class Parser {
      */
     private static TaggedText extractTrailingTags(String args) {
         String remaining = args.trim();
-        Set<String> tags = new LinkedHashSet<>();
+        Deque<String> tags = new ArrayDeque<>();
 
         while (!remaining.isEmpty()) {
             Matcher matcher = TRAILING_TAG_PATTERN.matcher(remaining);
@@ -283,11 +318,11 @@ public class Parser {
                 break;
             }
 
-            tags.add(normaliseTag(matcher.group(1)));
+            tags.addFirst(normaliseTag(matcher.group(1)));
             remaining = remaining.substring(0, matcher.start()).trim();
         }
 
-        return new TaggedText(remaining, tags);
+        return new TaggedText(remaining, new LinkedHashSet<>(tags));
     }
 
     /**

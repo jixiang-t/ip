@@ -2,6 +2,8 @@ package gnaix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Locale;
+
 import org.junit.jupiter.api.Test;
 
 class CommandTest {
@@ -24,5 +26,18 @@ class CommandTest {
     @Test
     void fromString_unknownCommand_unknownReturned() {
         assertEquals(Command.UNKNOWN, Command.fromString("hello"));
+    }
+
+    @Test
+    void fromString_turkishLocale_commandReturned() {
+        Locale originalLocale = Locale.getDefault();
+
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+
+            assertEquals(Command.FIND, Command.fromString("find"));
+        } finally {
+            Locale.setDefault(originalLocale);
+        }
     }
 }

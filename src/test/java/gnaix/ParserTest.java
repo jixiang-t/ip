@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -122,6 +123,30 @@ class ParserTest {
         assertFalse(result.hasError());
         assertEquals(Command.BYE, result.getCommand());
         assertNull(result.getTask());
+    }
+
+    @Test
+    void parseBye_trailingArguments_errorReturned() {
+        ParsedCommand result = Parser.parse("bye later");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "The bye command doesn't take arguments."
+                        + System.lineSeparator()
+                        + "Try bye on its own.",
+                result.getError());
+    }
+
+    @Test
+    void parseList_trailingArguments_errorReturned() {
+        ParsedCommand result = Parser.parse("list tasks");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "The list command doesn't take arguments."
+                        + System.lineSeparator()
+                        + "Try list on its own.",
+                result.getError());
     }
 
     @Test
@@ -299,6 +324,37 @@ class ParserTest {
     }
 
     @Test
+    void parseEvent_endBeforeStart_errorReturned() {
+        ParsedCommand result = Parser.parse(
+                "event project meeting /from 2026-09-01 1600 "
+                        + "/to 2026-09-01 1400");
+
+        assertTrue(result.hasError());
+        assertEquals(
+                "That event's end time is before its start time."
+                        + System.lineSeparator()
+                        + "Use an end time at or after its start time.",
+                result.getError());
+    }
+
+    @Test
+    void parseEvent_sameStartAndEnd_eventCreated() {
+        ParsedCommand result = Parser.parse(
+                "event project meeting /from 2026-09-01 1400 "
+                        + "/to 2026-09-01 1400");
+
+        assertFalse(result.hasError());
+        assertEquals(Command.EVENT, result.getCommand());
+        Event event = (Event) result.getTask();
+        assertEquals(
+                LocalDateTime.of(2026, 9, 1, 14, 0),
+                event.getFrom());
+        assertEquals(
+                LocalDateTime.of(2026, 9, 1, 14, 0),
+                event.getTo());
+    }
+
+    @Test
     void parseDate_invalidDate_errorReturned() {
         ParsedCommand result = Parser.parse("date 2026-99-99");
 
@@ -367,7 +423,7 @@ class ParserTest {
     }
 
     @Test
-    void parseTodo_multipleTags_tagsExtracted() {
+    void parseTodo_multipleTags_inputOrderPreserved() {
         ParsedCommand result =
                 Parser.parse("todo study CS2103T #school #urgent");
 
@@ -376,20 +432,31 @@ class ParserTest {
                 "study CS2103T",
                 result.getTask().getDescription());
         assertEquals(
-                Set.of("school", "urgent"),
-                result.getTask().getTags());
+                List.of("school", "urgent"),
+                List.copyOf(result.getTask().getTags()));
     }
 
     @Test
-    void parseTodo_duplicateTags_storedOnce() {
+    void parseTodo_duplicateTags_firstOccurrenceOrderPreserved() {
         ParsedCommand result =
-                Parser.parse("todo study CS2103T #school #School");
+                Parser.parse(
+                        "todo study CS2103T #school #urgent #School");
 
         assertFalse(result.hasError());
-        assertEquals(1, result.getTask().getTags().size());
         assertEquals(
-                Set.of("school"),
-                result.getTask().getTags());
+                List.of("school", "urgent"),
+                List.copyOf(result.getTask().getTags()));
+    }
+
+    @Test
+    void parseTodo_mixedCaseTags_orderPreservedAfterNormalisation() {
+        ParsedCommand result =
+                Parser.parse("todo study CS2103T #School #URGENT");
+
+        assertFalse(result.hasError());
+        assertEquals(
+                List.of("school", "urgent"),
+                List.copyOf(result.getTask().getTags()));
     }
 
     @Test

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -437,11 +438,10 @@ public class Gnaix {
         StringBuilder response =
                 new StringBuilder("These are the tasks that match your search:");
 
-        String normalisedKeyword = keyword.toLowerCase();
+        String normalisedKeyword = normaliseForSearch(keyword);
 
         List<Integer> matchingIndices = IntStream.range(0, tasks.size())
-                .filter(i -> tasks.get(i).getDescription()
-                        .toLowerCase()
+                .filter(i -> normaliseForSearch(tasks.get(i).getDescription())
                         .contains(normalisedKeyword))
                 .boxed()
                 .toList();
@@ -582,14 +582,23 @@ public class Gnaix {
      * @return Numbered task display data for matching tasks.
      */
     private List<TaskDisplay> getFindTaskDisplays(String keyword) {
-        String normalisedKeyword = keyword.toLowerCase();
+        String normalisedKeyword = normaliseForSearch(keyword);
 
         return IntStream.range(0, tasks.size())
-                .filter(i -> tasks.get(i).getDescription()
-                        .toLowerCase()
+                .filter(i -> normaliseForSearch(tasks.get(i).getDescription())
                         .contains(normalisedKeyword))
                 .mapToObj(index -> new TaskDisplay(index + 1, tasks.get(index)))
                 .toList();
+    }
+
+    /**
+     * Normalises text for locale-independent, case-insensitive searching.
+     *
+     * @param text Text to normalise.
+     * @return Lowercase text using a locale-neutral mapping.
+     */
+    private static String normaliseForSearch(String text) {
+        return text.toLowerCase(Locale.ROOT);
     }
 
     /**
